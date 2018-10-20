@@ -1,0 +1,147 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<project
+	xmlns = "http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation = "http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<!-- Artifact Specification -->
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>ar.edu.itba.pod</groupId>
+	<artifactId>hazelcaster</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>Hazelcaster</name>
+	<url>https://github.com/agustin-golmar/Hazelcaster</url>
+
+	<description>
+		A map-reduce implementation in Hazelcast, for querying airports.
+	</description>
+
+	<!-- Modules -->
+	<modules>
+		<module>abstractions</module>
+		<module>interfaces</module>
+		<module>backend</module>
+		<module>server</module>
+		<module>client</module>
+	</modules>
+
+	<!-- Properties -->
+	<properties>
+		<!-- Platform -->
+		<java.version>1.8</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<!-- Java Extensions -->
+		<javax.inject.version>1</javax.inject.version>
+
+		<!-- General Dependencies -->
+		<spring-context.version>5.1.1.RELEASE</spring-context.version>
+
+		<!-- Hazelcast -->
+		<com.hazelcast.version>3.7.8</com.hazelcast.version>
+			<hazelcast.version>${com.hazelcast.version}</hazelcast.version>
+			<hazelcast-client.version>${com.hazelcast.version}</hazelcast-client.version>
+
+		<!-- Logging -->
+		<ch.qos.logback.version>1.2.3</ch.qos.logback.version>
+		<org.slf4j.version>1.7.25</org.slf4j.version>
+			<jcl-over-slf4j.version>${org.slf4j.version}</jcl-over-slf4j.version>
+			<logback-classic.version>${ch.qos.logback.version}</logback-classic.version>
+			<logback-core.version>${ch.qos.logback.version}</logback-core.version>
+			<slf4j-api.version>${org.slf4j.version}</slf4j-api.version>
+
+		<!-- Plugins -->
+		<maven-assembly-plugin.version>3.1.0</maven-assembly-plugin.version>
+		<maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
+		<maven-eclipse-plugin.version>2.10</maven-eclipse-plugin.version>
+	</properties>
+
+	<!-- Global Dependencies -->
+	<dependencyManagement>
+		<dependencies>
+			<!-- ********************************************************** -->
+			<!-- Java Extensions -->
+			<dependency>
+				<groupId>javax.inject</groupId>
+				<artifactId>javax.inject</artifactId>
+				<version>${javax.inject.version}</version>
+			</dependency>
+			<!-- ********************************************************** -->
+			<!-- General Dependencies -->
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-context</artifactId>
+				<version>${spring-context.version}</version>
+			</dependency>
+			<!-- ********************************************************** -->
+			<!-- Hazelcast -->
+			<dependency>
+				<groupId>com.hazelcast</groupId>
+				<artifactId>hazelcast</artifactId>
+				<version>${hazelcast.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.hazelcast</groupId>
+				<artifactId>hazelcast-client</artifactId>
+				<version>${hazelcast-client.version}</version>
+			</dependency>
+			<!-- ********************************************************** -->
+			<!-- Logging -->
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>jcl-over-slf4j</artifactId>
+				<version>${jcl-over-slf4j.version}</version>
+				<scope>runtime</scope>
+			</dependency>
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-classic</artifactId>
+				<version>${logback-classic.version}</version>
+				<scope>runtime</scope>
+			</dependency>
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-core</artifactId>
+				<version>${logback-core.version}</version>
+				<scope>runtime</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>${slf4j-api.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<!-- Plugins -->
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>${maven-assembly-plugin.version}</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin.version}</version>
+				<configuration>
+					<compilerVersion>${java.version}</compilerVersion>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+					<useIncrementalCompilation>false</useIncrementalCompilation>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>${maven-eclipse-plugin.version}</version>
+				<configuration>
+					<downloadSources>true</downloadSources>
+					<downloadJavadocs>true</downloadJavadocs>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

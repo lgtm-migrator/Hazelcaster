@@ -1,0 +1,13 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<configuration debug = "false">
+	<appender name = "hazelcaster-appender" class = "ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<charset>UTF-8</charset>
+			<pattern>%d{dd/MM/yyyy HH:mm:ss.SSSS} %-5level [%thread] %logger{36} - %msg%n</pattern>
+			<outputPatternAsHeader>false</outputPatternAsHeader>
+		</encoder>
+	</appender>
+	<root level = "DEBUG">
+		<appender-ref ref = "hazelcaster-appender"/>
+	</root>
+</configuration>
