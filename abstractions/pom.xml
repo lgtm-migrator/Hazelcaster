@@ -18,5 +18,12 @@
 	</parent>
 
 	<!-- Dependencies -->
-	<dependencies></dependencies>
+	<dependencies>
+		<!-- ************************************************************** -->
+		<!-- Hazelcast -->
+		<dependency>
+			<groupId>com.hazelcast</groupId>
+			<artifactId>hazelcast-client</artifactId>
+		</dependency>
+	</dependencies>
 </project>

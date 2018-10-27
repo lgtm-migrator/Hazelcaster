@@ -4,6 +4,7 @@ import ar.edu.itba.pod.hazelcaster.client.config.ClientConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
 
 public class Client {
 
@@ -12,7 +13,8 @@ public class Client {
 
 	public static void main(final String ... arguments) {
 		logger.info("(2018) Hazelcaster Client v1.0.");
-		new AnnotationConfigApplicationContext(ClientConfiguration.class)
-			.close();
+		final AbstractApplicationContext context
+			= new AnnotationConfigApplicationContext(ClientConfiguration.class);
+		context.close();
 	}
 }

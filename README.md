@@ -57,7 +57,18 @@ $ java -jar hazelcaster-client.jar <options>
 
 ## Options
 
-...
+The following options are required (they must be set, always):
+
+* `addresses`: a list of cluster node addresses (comma separated). The client
+will try to connect to at least with one of them.
+
+## Querying Example
+
+To connect to the cluster (with a listening node in _127.0.0.1:5701_), use:
+
+```
+$ java -jar -Daddresses=127.0.0.1:5701 hazelcaster-client.jar
+```
 
 ## Designer
 
