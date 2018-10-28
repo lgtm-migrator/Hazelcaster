@@ -40,8 +40,8 @@
 		<!-- ************************************************************** -->
 		<!-- General Dependencies -->
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot</artifactId>
 		</dependency>
 		<!-- ************************************************************** -->
 		<!-- Logging -->

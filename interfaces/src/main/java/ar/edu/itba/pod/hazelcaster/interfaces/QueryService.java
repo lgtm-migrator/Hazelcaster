@@ -12,7 +12,7 @@ public interface QueryService {
 	public void getAirportsPairsWithSameMovements();
 	public void getMovementsBetweenAirports();
 
-	public void getAirportsWithMostLandings(final int airports);
+	public void getAirportsWithMostLandings(final String oaci, final int airports);
 	public void getAirportsWithMostInternationalLandings(final int airports);
 	public void getProvincesPairsWithMovements(final int minMovements);
 }

@@ -52,25 +52,42 @@ This will deploy a new node in the cluster. After that, you can run the client
 with:
 
 ```
-$ java -jar hazelcaster-client.jar <options>
+$ java <options> -jar hazelcaster-client.jar
 ```
 
 ## Options
 
 The following options are required (they must be set, always):
 
-* `addresses`: a list of cluster node addresses (comma separated). The client
-will try to connect to at least with one of them.
+* `movementsInPath`: the _CSV_ file with airports movements.
+* `airportsInPath`: the _CSV_ file with airpots description.
+
+This options are optional, but you probably want to change them:
+
+* `addresses`: a list of cluster node addresses (comma or semicolon separated).
+The client will try to connect to at least with one of them.
+* `query`: the query number to run. Must be in range _[1, ..., 6]_.
+* `n`: the number of lines to retrieve in queries _4_ and _5_.
+* `min`: the minimum movements for query _6_.
+* `oaci`: the _OACI_ airport identifier for query _4_.
+* `outPath`: the output filename, for saving the result of the map-reduce
+query.
+* `timeOutPath`: the output filename, for saving the times of principal events.
 
 ## Querying Example
 
-To connect to the cluster (with a listening node in _127.0.0.1:5701_), use:
+To connect to the cluster (with a listening node in _127.0.0.1:5701_), and run
+query _1_, use:
 
 ```
-$ java -jar -Daddresses=127.0.0.1:5701 hazelcaster-client.jar
+$ java -Daddresses=127.0.0.1:5701 \
+       -DmovementsInPath=movements.csv \
+       -DairportsInPath=airports.csv \
+       -Dquery=1 \
+       -jar hazelcaster-client.jar
 ```
 
-## Designer
+## Designers
 
 This project has been built, designed and maintained by:
 

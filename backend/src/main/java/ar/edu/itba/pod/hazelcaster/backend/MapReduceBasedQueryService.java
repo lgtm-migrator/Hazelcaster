@@ -27,7 +27,7 @@ public class MapReduceBasedQueryService implements QueryService {
 	}
 
 	@Override
-	public void getAirportsWithMostLandings(final int airports) {
+	public void getAirportsWithMostLandings(final String oaci, final int airports) {
 		// TODO Auto-generated method stub
 	}
 

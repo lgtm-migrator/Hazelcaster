@@ -10,4 +10,7 @@
 	<root level = "DEBUG">
 		<appender-ref ref = "hazelcaster-appender"/>
 	</root>
+	<logger name = "com.hazelcast" level = "DEBUG">
+		<appender-ref ref = "hazelcaster-appender"/>
+	</logger>
 </configuration>

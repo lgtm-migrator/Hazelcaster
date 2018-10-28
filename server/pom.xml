@@ -20,7 +20,7 @@
 	<!-- Properties -->
 	<properties>
 		<final-name.jar>${project.parent.artifactId}-${project.artifactId}</final-name.jar>
-		<main-class>${project.groupId}.${project.parent.artifactId}.${project.artifactId}.Server</main-class>
+		<start-class>${project.groupId}.${project.parent.artifactId}.${project.artifactId}.Server</start-class>
 	</properties>
 
 	<!-- Dependencies -->
@@ -43,11 +43,27 @@
 			<groupId>javax.inject</groupId>
 			<artifactId>javax.inject</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+		</dependency>
 		<!-- ************************************************************** -->
 		<!-- General Dependencies -->
 		<dependency>
+			<groupId>org.hibernate.validator</groupId>
+			<artifactId>hibernate-validator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-autoconfigure</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
+			<artifactId>spring-core</artifactId>
 		</dependency>
 		<!-- ************************************************************** -->
 		<!-- Hazelcast -->
@@ -79,30 +95,20 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<outputDirectory>${project.parent.basedir}</outputDirectory>
+					<finalName>${final-name.jar}</finalName>
+					<mainClass>${start-class}</mainClass>
+				</configuration>
 				<executions>
 					<execution>
-						<id>make-assembly</id>
-						<phase>package</phase>
 						<goals>
-							<goal>single</goal>
+							<goal>repackage</goal>
 						</goals>
 					</execution>
 				</executions>
-				<configuration>
-					<outputDirectory>${project.parent.basedir}</outputDirectory>
-					<appendAssemblyId>false</appendAssemblyId>
-					<finalName>${final-name.jar}</finalName>
-					<archive>
-						<manifest>
-							<mainClass>${main-class}</mainClass>
-						</manifest>
-					</archive>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>

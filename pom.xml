@@ -34,9 +34,14 @@
 
 		<!-- Java Extensions -->
 		<javax.inject.version>1</javax.inject.version>
+		<validation-api.version>2.0.1.Final</validation-api.version>
 
 		<!-- General Dependencies -->
-		<spring-context.version>5.1.1.RELEASE</spring-context.version>
+		<hibernate-validator.version>6.0.13.Final</hibernate-validator.version>
+		<org.springframework.boot.version>2.0.6.RELEASE</org.springframework.boot.version>
+			<spring-boot.version>${org.springframework.boot.version}</spring-boot.version>
+			<spring-boot-autoconfigure.version>${org.springframework.boot.version}</spring-boot-autoconfigure.version>
+		<spring-core.version>5.1.1.RELEASE</spring-core.version>
 
 		<!-- Hazelcast -->
 		<com.hazelcast.version>3.7.8</com.hazelcast.version>
@@ -52,9 +57,9 @@
 			<slf4j-api.version>${org.slf4j.version}</slf4j-api.version>
 
 		<!-- Plugins -->
-		<maven-assembly-plugin.version>3.1.0</maven-assembly-plugin.version>
 		<maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
 		<maven-eclipse-plugin.version>2.10</maven-eclipse-plugin.version>
+			<spring-boot-maven-plugin.version>${org.springframework.boot.version}</spring-boot-maven-plugin.version>
 	</properties>
 
 	<!-- Global Dependencies -->
@@ -67,12 +72,32 @@
 				<artifactId>javax.inject</artifactId>
 				<version>${javax.inject.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>javax.validation</groupId>
+				<artifactId>validation-api</artifactId>
+				<version>${validation-api.version}</version>
+			</dependency>
 			<!-- ********************************************************** -->
 			<!-- General Dependencies -->
 			<dependency>
+				<groupId>org.hibernate.validator</groupId>
+				<artifactId>hibernate-validator</artifactId>
+				<version>${hibernate-validator.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot</artifactId>
+				<version>${spring-boot.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-autoconfigure</artifactId>
+				<version>${spring-boot-autoconfigure.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>org.springframework</groupId>
-				<artifactId>spring-context</artifactId>
-				<version>${spring-context.version}</version>
+				<artifactId>spring-core</artifactId>
+				<version>${spring-core.version}</version>
 			</dependency>
 			<!-- ********************************************************** -->
 			<!-- Hazelcast -->
@@ -119,11 +144,6 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>${maven-assembly-plugin.version}</version>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>${maven-compiler-plugin.version}</version>
 				<configuration>
@@ -141,6 +161,11 @@
 					<downloadSources>true</downloadSources>
 					<downloadJavadocs>true</downloadJavadocs>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>${spring-boot-maven-plugin.version}</version>
 			</plugin>
 		</plugins>
 	</build>
