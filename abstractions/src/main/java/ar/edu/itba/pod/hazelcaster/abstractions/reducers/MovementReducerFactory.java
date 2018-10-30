@@ -3,9 +3,9 @@ package ar.edu.itba.pod.hazelcaster.abstractions.reducers;
 import com.hazelcast.mapreduce.Reducer;
 import com.hazelcast.mapreduce.ReducerFactory;
 
-import ar.edu.itba.pod.hazelcaster.abstractions.Movement;
+import ar.edu.itba.pod.hazelcaster.abstractions.Query1ResultType;
 
-public class MovementReducerFactory implements ReducerFactory<Movement, Integer, Integer> {
+public class MovementReducerFactory implements ReducerFactory<Query1ResultType, Integer, Integer> {
 
 	/**
 	 * 
@@ -13,7 +13,7 @@ public class MovementReducerFactory implements ReducerFactory<Movement, Integer,
 	private static final long serialVersionUID = 3431945081279013355L;
 
 	@Override
-	public Reducer<Integer, Integer> newReducer( Movement key ) {
+	public Reducer<Integer, Integer> newReducer( Query1ResultType key ) {
 		return new MovementReducer();
 	}
 	 

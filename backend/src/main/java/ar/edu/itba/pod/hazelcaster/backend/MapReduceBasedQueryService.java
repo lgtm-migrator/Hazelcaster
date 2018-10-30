@@ -1,6 +1,5 @@
 package ar.edu.itba.pod.hazelcaster.backend;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -16,6 +15,7 @@ import com.hazelcast.mapreduce.JobTracker;
 import com.hazelcast.mapreduce.KeyValueSource;
 
 import ar.edu.itba.pod.hazelcaster.abstractions.Movement;
+import ar.edu.itba.pod.hazelcaster.abstractions.Query1ResultType;
 import ar.edu.itba.pod.hazelcaster.abstractions.mappers.MovementMapper;
 import ar.edu.itba.pod.hazelcaster.abstractions.reducers.MovementReducerFactory;
 import ar.edu.itba.pod.hazelcaster.interfaces.QueryService;
@@ -32,29 +32,30 @@ public class MapReduceBasedQueryService implements QueryService {
 	HazelcastInstance hazelcastInstance;
 
 	@Override
-	public void getAirportsMovements() throws InterruptedException, ExecutionException {
+	public Map<Query1ResultType, Integer> getAirportsMovements(List<Movement> movements) 
+					throws InterruptedException, ExecutionException {
 		JobTracker jobTracker = hazelcastInstance.getJobTracker( "default" );
-		//TODO: read from file
-		List<Movement> movements = new ArrayList<>();
 		//TODO: create list config in hazelcastInstance configuration
-		IList<Movement> movementsList = hazelcastInstance.getList("query1");
+		IList<Query1ResultType> movementsList = hazelcastInstance.getList("query1");
 		movementsList.clear();
-		movementsList.addAll(movements);
-		final KeyValueSource<String, Movement> source = KeyValueSource.fromList(movementsList);
-		Job<String, Movement> job1 = jobTracker.newJob(source);
-		ICompletableFuture<Map<Movement, Integer>> future = job1
+		for(Movement m : movements) {
+			movementsList.add(new Query1ResultType(m.getOrigin()));
+			movementsList.add(new Query1ResultType(m.getDestination()));
+		}
+		final KeyValueSource<String, Query1ResultType> source = KeyValueSource.fromList(movementsList);
+		Job<String, Query1ResultType> job1 = jobTracker.newJob(source);
+		ICompletableFuture<Map<Query1ResultType, Integer>> future = job1
 				.mapper(new MovementMapper())
         		.reducer(new MovementReducerFactory())
         		.submit();
-		//TODO: Check
-		//future.andThen(buildCallback());
-		Map<Movement, Integer> result = future.get();
-		//TODO: Analyze result
+		Map<Query1ResultType, Integer> result = future.get();
+		return result;
 	}
 
 	@Override
-	public void getAirportsPairsWithSameMovements() throws InterruptedException, ExecutionException {
-		
+	public Map<Query1ResultType, Integer> getAirportsPairsWithSameMovements(List<Movement> movements) 
+			throws InterruptedException, ExecutionException {
+		return null;
 	}
 
 	@Override
