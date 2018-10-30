@@ -1,6 +1,13 @@
 package ar.edu.itba.pod.hazelcaster.interfaces;
 
+import java.util.List;
+import java.util.Map;
+import java.util.SortedSet;
 import java.util.concurrent.ExecutionException;
+
+import ar.edu.itba.pod.hazelcaster.abstractions.Airport;
+import ar.edu.itba.pod.hazelcaster.abstractions.Movement;
+import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.MoveCountOutput;
 
 /**
 	* <p>Las 6 queries requeridas por la cátedra.</p>
@@ -10,7 +17,8 @@ public interface QueryService {
 
 	// NOTA: Se deben corregir los tipos de retorno.
 
-	public void getAirportsMovements() throws InterruptedException, ExecutionException;
+	public List<MoveCountOutput> getAirportsMovements(final List<Movement> movements, final List<Airport> airports) 
+			throws InterruptedException, ExecutionException;
 	public void getAirportsPairsWithSameMovements() throws InterruptedException, ExecutionException;
 	public void getMovementsBetweenAirports();
 

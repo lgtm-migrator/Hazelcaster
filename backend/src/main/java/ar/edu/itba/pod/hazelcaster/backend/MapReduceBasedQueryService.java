@@ -3,7 +3,9 @@ package ar.edu.itba.pod.hazelcaster.backend;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,9 +17,12 @@ import com.hazelcast.mapreduce.Job;
 import com.hazelcast.mapreduce.JobTracker;
 import com.hazelcast.mapreduce.KeyValueSource;
 
+import ar.edu.itba.pod.hazelcaster.abstractions.Airport;
 import ar.edu.itba.pod.hazelcaster.abstractions.Movement;
-import ar.edu.itba.pod.hazelcaster.abstractions.mappers.MovementMapper;
-import ar.edu.itba.pod.hazelcaster.abstractions.reducers.MovementReducerFactory;
+import ar.edu.itba.pod.hazelcaster.abstractions.combiners.MoveCountCombinerFactory;
+import ar.edu.itba.pod.hazelcaster.abstractions.mappers.MoveCountMapper;
+import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.MoveCountOutput;
+import ar.edu.itba.pod.hazelcaster.abstractions.reducers.MoveCountReducerFactory;
 import ar.edu.itba.pod.hazelcaster.interfaces.QueryService;
 
 	/**
@@ -32,23 +37,41 @@ public class MapReduceBasedQueryService implements QueryService {
 	HazelcastInstance hazelcastInstance;
 
 	@Override
-	public void getAirportsMovements() throws InterruptedException, ExecutionException {
+	public List<MoveCountOutput> getAirportsMovements(final List<Movement> movements, final List<Airport> airports) 
+			throws InterruptedException, ExecutionException {
+		
 		JobTracker jobTracker = hazelcastInstance.getJobTracker( "default" );
 		//TODO: read from file
-		List<Movement> movements = new ArrayList<>();
 		//TODO: create list config in hazelcastInstance configuration
 		IList<Movement> movementsList = hazelcastInstance.getList("query1");
+
 		movementsList.clear();
 		movementsList.addAll(movements);
+				
 		final KeyValueSource<String, Movement> source = KeyValueSource.fromList(movementsList);
 		Job<String, Movement> job1 = jobTracker.newJob(source);
-		ICompletableFuture<Map<Movement, Integer>> future = job1
-				.mapper(new MovementMapper())
-        		.reducer(new MovementReducerFactory())
+		ICompletableFuture<Map<String, MoveCountOutput>> future = job1
+				.mapper(new MoveCountMapper())
+				.combiner(new MoveCountCombinerFactory())
+        		.reducer(new MoveCountReducerFactory())
         		.submit();
+		
 		//TODO: Check
-		//future.andThen(buildCallback());
-		Map<Movement, Integer> result = future.get();
+//		future.andThen(buildCallback());
+		
+		System.out.println("");
+		
+		Map<String, String> oaciDenominationMap = airports.stream()
+				.filter(airport -> !airport.getOACI().equals(""))
+				.collect(Collectors.toMap(Airport::getOACI, Airport::getDenomination));
+		
+		return future.get().values().stream()
+				.map(element -> {
+					element.setDenomination(oaciDenominationMap.get(element.getOaci()));
+					return element;
+				})
+				.sorted()
+				.collect(Collectors.toList());
 		//TODO: Analyze result
 	}
 
