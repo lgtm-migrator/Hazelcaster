@@ -17,7 +17,8 @@ import org.springframework.lang.Nullable;
 
 @EnableConfigurationProperties(ClientProperties.class)
 @SpringBootApplication(scanBasePackages = {
-	"ar.edu.itba.pod.hazelcaster.backend"
+	"ar.edu.itba.pod.hazelcaster.backend",
+	"ar.edu.itba.pod.hazelcaster.client"
 })
 public class ClientConfiguration {
 
