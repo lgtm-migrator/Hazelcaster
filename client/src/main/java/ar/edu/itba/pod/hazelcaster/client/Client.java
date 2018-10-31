@@ -67,15 +67,25 @@ public class Client {
 		try {
 			final List<Airport> airports = csv.read(Airport.class, properties.getAirportsFilename());
 			final List<Movement> movements = csv.read(Movement.class, properties.getMovementsFilename());
+			
+			int queryId = properties.getQueryID();
+			
+			switch (queryId) {
+				case 1:
+					List<MoveCountOutput> result = qService.getAirportsMovements(movements, airports);
+					csv.write(result, properties.getResultFilename());
+					break;
+			}
+			
 			// En 'properties' están todas las properties.
 			// Cargarlas en el cluster.
 			
-			List<MoveCountOutput> result = qService.getAirportsMovements(movements, airports);
-			
-			System.out.println("Query 1 answer:");
-			for (MoveCountOutput output : result) {
-				System.out.println(output.toString());
-			}
+//			List<MoveCountOutput> result = qService.getAirportsMovements(movements, airports);
+//			
+//			System.out.println("Query 1 answer:");
+//			for (MoveCountOutput output : result) {
+//				System.out.println(output.toString());
+//			}
 			
 			// Ejecutar query.
 			// Transformar el resultado para poder usar csv.write(...).

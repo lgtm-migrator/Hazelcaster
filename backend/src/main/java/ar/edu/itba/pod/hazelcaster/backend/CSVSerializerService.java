@@ -5,6 +5,7 @@ import ar.edu.itba.pod.hazelcaster.backend.mapper.*;
 import ar.edu.itba.pod.hazelcaster.abstractions.Airport;
 import ar.edu.itba.pod.hazelcaster.abstractions.Movement;
 import ar.edu.itba.pod.hazelcaster.abstractions.exception.UnmappedTypeException;
+import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.MoveCountOutput;
 import ar.edu.itba.pod.hazelcaster.interfaces.CSVSerializer;
 import ar.edu.itba.pod.hazelcaster.interfaces.MapperService;
 import java.io.File;
@@ -38,6 +39,7 @@ public class CSVSerializerService implements CSVSerializer {
 		this.mappers = new HashMap<>();
 		addMapper(Airport.class, new AirportMapper());
 		addMapper(Movement.class, new MovementMapper());
+		addMapper(MoveCountOutput.class, new MoveCountOutputMapper());
 		// Agregar más mappers...
 	}
 

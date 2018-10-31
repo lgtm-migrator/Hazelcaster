@@ -55,11 +55,9 @@ public class MapReduceBasedQueryService implements QueryService {
         		.reducer(new MoveCountReducerFactory())
         		.submit();
 		
-		//TODO: Check
-//		future.andThen(buildCallback());
-		
-		System.out.println("");
-		
+		// TODO: Check
+		// future.andThen(buildCallback());
+				
 		Map<String, String> oaciDenominationMap = airports.stream()
 				.filter(airport -> !airport.getOACI().equals(""))
 				.collect(Collectors.toMap(Airport::getOACI, Airport::getDenomination));
@@ -71,7 +69,6 @@ public class MapReduceBasedQueryService implements QueryService {
 				})
 				.sorted()
 				.collect(Collectors.toList());
-		//TODO: Analyze result
 	}
 
 	@Override
