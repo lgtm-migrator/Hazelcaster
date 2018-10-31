@@ -68,11 +68,10 @@ public class MoveCountOutput implements DataSerializable, Comparable<MoveCountOu
 		if (this.count > other.getCount()) {
 			return -1;
 		}
-		else if (this.count < other.getCount()) {
+		if (this.count < other.getCount()) {
 			return 1;
 		}
-		else 
-			return this.oaci.compareTo(other.getOaci());
+		return this.oaci.compareTo(other.getOaci());
 	}
 
 }

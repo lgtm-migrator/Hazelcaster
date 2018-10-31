@@ -13,7 +13,7 @@ public class MoveCountReducerFactory implements ReducerFactory<String, Long, Mov
 	private static final long serialVersionUID = 3431945081279013355L;
 
 	@Override
-	public Reducer<Long, MoveCountOutput> newReducer( String key ) {
+	public Reducer<Long, MoveCountOutput> newReducer(String key) {
 		return new MovementReducer(key);
 	}
 	 
@@ -27,7 +27,7 @@ public class MoveCountReducerFactory implements ReducerFactory<String, Long, Mov
 		}
 		
 		@Override
-		public void beginReduce () {
+		public void beginReduce() {
 			sum = 0;
 		}
 	 

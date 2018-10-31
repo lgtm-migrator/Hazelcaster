@@ -8,6 +8,7 @@ import java.util.concurrent.ExecutionException;
 import ar.edu.itba.pod.hazelcaster.abstractions.Airport;
 import ar.edu.itba.pod.hazelcaster.abstractions.Movement;
 import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.MoveCountOutput;
+import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.SameMovesPairOutput;
 
 /**
 	* <p>Las 6 queries requeridas por la cátedra.</p>
@@ -19,7 +20,10 @@ public interface QueryService {
 
 	public List<MoveCountOutput> getAirportsMovements(final List<Movement> movements, final List<Airport> airports) 
 			throws InterruptedException, ExecutionException;
-	public void getAirportsPairsWithSameMovements() throws InterruptedException, ExecutionException;
+	
+	public List<SameMovesPairOutput> getAirportsPairsWithSameMovements(List<Movement> movements,
+			List<Airport> airports) throws InterruptedException, ExecutionException;
+	
 	public void getMovementsBetweenAirports();
 
 	public void getAirportsWithMostLandings(final String oaci, final int airports);

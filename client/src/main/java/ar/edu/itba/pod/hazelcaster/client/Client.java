@@ -3,6 +3,7 @@ package ar.edu.itba.pod.hazelcaster.client;
 import ar.edu.itba.pod.hazelcaster.abstractions.Airport;
 import ar.edu.itba.pod.hazelcaster.abstractions.Movement;
 import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.MoveCountOutput;
+import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.SameMovesPairOutput;
 import ar.edu.itba.pod.hazelcaster.client.config.ClientConfiguration;
 import ar.edu.itba.pod.hazelcaster.client.config.ClientProperties;
 import ar.edu.itba.pod.hazelcaster.interfaces.CSVSerializer;
@@ -72,28 +73,18 @@ public class Client {
 			
 			switch (queryId) {
 				case 1:
-					List<MoveCountOutput> result = qService.getAirportsMovements(movements, airports);
-					csv.write(result, properties.getResultFilename());
+					List<MoveCountOutput> result1 = qService.getAirportsMovements(movements, airports);
+					csv.write(result1, properties.getResultFilename());
+					break;
+				case 2:
+					List<SameMovesPairOutput> result2 = qService
+							.getAirportsPairsWithSameMovements(movements, airports);
+					csv.write(result2, properties.getResultFilename());
 					break;
 			}
 			
 			// En 'properties' están todas las properties.
 			// Cargarlas en el cluster.
-			
-//			List<MoveCountOutput> result = qService.getAirportsMovements(movements, airports);
-//			
-//			System.out.println("Query 1 answer:");
-//			for (MoveCountOutput output : result) {
-//				System.out.println(output.toString());
-//			}
-			
-			// Ejecutar query.
-			// Transformar el resultado para poder usar csv.write(...).
-			// Almacenar el resultado en un archivo.
-
-			// Estos write son de ejemplo:
-			//csv.write(airports, properties.getResultFilename());
-			//csv.write(movements, properties.getResultFilename() + "M");
 		}
 		catch (final IOException exception) {
 			exception.printStackTrace();
