@@ -60,15 +60,18 @@ public class Client {
 		logger.info("Hazelcaster client exiting...");
 	}
 
+	private static final Logger timeLogger = LoggerFactory.getLogger("time-logger");
+
 	public void run() {
 		if (hazelcast == null) {
 			logger.error("No se pudo desplegar la instancia de Hazelcast.");
 			return;
 		}
 		try {
+			timeLogger.info("Inicio de lectura de archivos CSV de entrada.");
 			final List<Airport> airports = csv.read(Airport.class, properties.getAirportsFilename());
 			final List<Movement> movements = csv.read(Movement.class, properties.getMovementsFilename());
-			
+			timeLogger.info("Fin de lectura de archivos CSV de entrada.");
 			int queryId = properties.getQueryID();
 			
 			switch (queryId) {
