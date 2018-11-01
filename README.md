@@ -45,14 +45,24 @@ Or do it manually, if you prefer.
 In the root folder, type:
 
 ```
-$ java -jar hazelcaster-server.jar
+$ java -jar -Dinterfaces=127.0.0.1,10.17.0.* hazelcaster-server.jar
 ```
 
-This will deploy a new node in the cluster. After that, you can run the client
-with:
+This will deploy a new node in the cluster, listening on the provided
+interfaces (the default is _localhost_ and _192.168.0.\*_, so you can change
+it). After that, you can run the client with:
 
 ```
 $ java <options> -jar hazelcaster-client.jar
+```
+
+The client and server support an additional option: the _logging level_. The
+default is DEBUG, so maybe you should use INFO or something higher:
+
+```
+$ java -Dlog.level=INFO ... -jar hazelcaster-server.jar
+$ ...
+$ java -Dlog.level=INFO ... -jar hazelcaster-client.jar
 ```
 
 ## Options

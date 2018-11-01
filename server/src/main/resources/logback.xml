@@ -7,10 +7,10 @@
 			<outputPatternAsHeader>false</outputPatternAsHeader>
 		</encoder>
 	</appender>
-	<root level = "DEBUG">
+	<root level = "${log.level}">
 		<appender-ref ref = "hazelcaster-appender"/>
 	</root>
-	<logger name = "com.hazelcast" level = "DEBUG">
+	<logger name = "com.hazelcast" level = "${log.level}" additivity = "false">
 		<appender-ref ref = "hazelcaster-appender"/>
 	</logger>
 </configuration>
