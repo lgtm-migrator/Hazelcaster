@@ -70,8 +70,4 @@
 		<!-- Backup configuration. -->
 		<backup-count>1</backup-count>
 	</list>
-	<list name = "${hazelcaster.cluster.name}-movements">
-		<!-- Backup configuration. -->
-		<backup-count>1</backup-count>
-	</list>
 </hazelcast>
