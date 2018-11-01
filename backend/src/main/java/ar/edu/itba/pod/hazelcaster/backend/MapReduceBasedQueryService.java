@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
@@ -20,14 +21,18 @@ import com.hazelcast.mapreduce.KeyValueSource;
 import ar.edu.itba.pod.hazelcaster.abstractions.Airport;
 import ar.edu.itba.pod.hazelcaster.abstractions.Movement;
 import ar.edu.itba.pod.hazelcaster.abstractions.SameMovesList;
+import ar.edu.itba.pod.hazelcaster.abstractions.collators.MoveCountCollator;
+import ar.edu.itba.pod.hazelcaster.abstractions.collators.OaciDenominationCollator;
 import ar.edu.itba.pod.hazelcaster.abstractions.combiners.MoveCountCombinerFactory;
 import ar.edu.itba.pod.hazelcaster.abstractions.mappers.MoveCountMapper;
+import ar.edu.itba.pod.hazelcaster.abstractions.mappers.OaciDenominationMapper;
 import ar.edu.itba.pod.hazelcaster.abstractions.mappers.SameMovesPairMapper;
 import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.MoveCountOutput;
 import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.SameMovesPairOutput;
 import ar.edu.itba.pod.hazelcaster.abstractions.reducers.MoveCountReducerFactory;
 import ar.edu.itba.pod.hazelcaster.abstractions.reducers.SameMovesPairReducerFactory;
 import ar.edu.itba.pod.hazelcaster.interfaces.QueryService;
+import ar.edu.itba.pod.hazelcaster.interfaces.properties.HazelcasterProperties;
 
 	/**
 	* <p>Implementación concreta de las consultas, basada en una arquitectura
@@ -39,44 +44,46 @@ public class MapReduceBasedQueryService implements QueryService {
 	
 	@Autowired
 	HazelcastInstance hazelcastInstance;
+	
+	@Autowired
+	HazelcasterProperties properties;
 
 	@Override
-	public List<MoveCountOutput> getAirportsMovements(final List<Movement> movements, final List<Airport> airports) 
+	public List<MoveCountOutput> getAirportsMovements() 
 			throws InterruptedException, ExecutionException {
 		
-		JobTracker jobTracker = hazelcastInstance.getJobTracker("default");
-		IList<Movement> movementsList = hazelcastInstance.getList("query1");
-
-		movementsList.clear();
-		movementsList.addAll(movements);
-				
-		final KeyValueSource<String, Movement> source = KeyValueSource.fromList(movementsList);
-		Job<String, Movement> job = jobTracker.newJob(source);
+		JobTracker jobTracker = hazelcastInstance.getJobTracker(properties.getClusterName() + "-jobtracker");
 		
-		ICompletableFuture<Map<String, MoveCountOutput>> future = job
+		IList<Airport> airportsList = hazelcastInstance.getList(properties.getClusterName() + "-airports");
+		IList<Movement> movementsList = hazelcastInstance.getList(properties.getClusterName() + "-movements");
+		
+		final KeyValueSource<String, Airport> airportSource = KeyValueSource.fromList(airportsList);
+		Job<String, Airport> airportJob = jobTracker.newJob(airportSource);
+		
+		// Map from OACI to Denomination (Airport).
+		ICompletableFuture<Map<String, String>> oaciDenominationMapFuture = airportJob
+				.mapper(new OaciDenominationMapper())
+				.submit(new OaciDenominationCollator());
+		
+		Map<String, String> oaciDenominationMap = oaciDenominationMapFuture.get();
+		
+		final KeyValueSource<String, Movement> movementSource = KeyValueSource.fromList(movementsList);
+		Job<String, Movement> movementJob = jobTracker.newJob(movementSource);
+		
+		ICompletableFuture<List<MoveCountOutput>> future = movementJob
 				.mapper(new MoveCountMapper())
 				.combiner(new MoveCountCombinerFactory())
         		.reducer(new MoveCountReducerFactory())
-        		.submit();
-						
-		Map<String, String> oaciDenominationMap = airports.stream()
-				.filter(airport -> !airport.getOACI().equals(""))
-				.collect(Collectors.toMap(Airport::getOACI, Airport::getDenomination));
+        		.submit(new MoveCountCollator(oaciDenominationMap));
 		
-		return future.get().values().stream()
-				.map(element -> {
-					element.setDenomination(oaciDenominationMap.get(element.getOaci()));
-					return element;
-				})
-				.sorted()
-				.collect(Collectors.toList());
+		return future.get();
 	}
 
 	@Override
 	public List<SameMovesPairOutput> getAirportsPairsWithSameMovements(List<Movement> movements,
 			List<Airport> airports) throws InterruptedException, ExecutionException {
 		
-		List<MoveCountOutput> moveCounts = getAirportsMovements(movements, airports);
+		List<MoveCountOutput> moveCounts = getAirportsMovements();
 		
 		moveCounts = moveCounts.parallelStream()
 				.filter(element -> !(element.getCount() < 1000L))

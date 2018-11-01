@@ -28,7 +28,7 @@
 	</network>
 
 	<!-- Job Tracker for Map-Reduce -->
-	<jobtracker name = "${hazelcaster.cluster.name}">
+	<jobtracker name = "${hazelcaster.cluster.name}-jobtracker">
 		<max-thread-size>0</max-thread-size>
 		<queue-size>0</queue-size>
 		<!-- ¿Cuánto debería ser? -->
@@ -38,7 +38,7 @@
 	</jobtracker>
 
 	<!-- Distributed Data Structures -->
-	<map name = "${hazelcaster.cluster.name}">
+	<map name = "${hazelcaster.cluster.name}-map">
 		<in-memory-format>BINARY</in-memory-format>
 
 		<!-- Backup configuration. -->
@@ -55,4 +55,5 @@
 		<!-- Split-brain policy. -->
 		<merge-policy>com.hazelcast.map.merge.PutIfAbsentMapMergePolicy</merge-policy>
 	</map>
+
 </hazelcast>

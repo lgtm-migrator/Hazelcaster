@@ -10,6 +10,8 @@ import ar.edu.itba.pod.hazelcaster.interfaces.CSVSerializer;
 import ar.edu.itba.pod.hazelcaster.interfaces.QueryService;
 
 import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.IList;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -74,9 +76,18 @@ public class Client {
 			timeLogger.info("Fin de lectura de archivos CSV de entrada.");
 			int queryId = properties.getQueryID();
 			
+			IList<Airport> airportsList = hazelcast.getList(properties.getClusterName() + "-airports");
+			IList<Movement> movementsList = hazelcast.getList(properties.getClusterName() + "-movements"); 
+
+			airportsList.clear();
+			airportsList.addAll(airports);
+			
+			movementsList.clear();
+			movementsList.addAll(movements);
+			
 			switch (queryId) {
 				case 1:
-					List<MoveCountOutput> result1 = qService.getAirportsMovements(movements, airports);
+					List<MoveCountOutput> result1 = qService.getAirportsMovements();
 					csv.write(result1, properties.getResultFilename());
 					break;
 				case 2:

@@ -18,8 +18,7 @@ public interface QueryService {
 
 	// NOTA: Se deben corregir los tipos de retorno.
 
-	public List<MoveCountOutput> getAirportsMovements(final List<Movement> movements, final List<Airport> airports) 
-			throws InterruptedException, ExecutionException;
+	public List<MoveCountOutput> getAirportsMovements() throws InterruptedException, ExecutionException;
 	
 	public List<SameMovesPairOutput> getAirportsPairsWithSameMovements(List<Movement> movements,
 			List<Airport> airports) throws InterruptedException, ExecutionException;
