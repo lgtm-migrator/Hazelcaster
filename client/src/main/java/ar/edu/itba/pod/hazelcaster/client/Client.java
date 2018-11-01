@@ -2,22 +2,15 @@ package ar.edu.itba.pod.hazelcaster.client;
 
 import ar.edu.itba.pod.hazelcaster.abstractions.Airport;
 import ar.edu.itba.pod.hazelcaster.abstractions.Movement;
-import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.LandingMoveCountOutput;
-import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.MoveCountOutput;
-import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.MovesBetweenAirportsOutput;
-import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.SameMovesPairOutput;
 import ar.edu.itba.pod.hazelcaster.client.config.ClientConfiguration;
 import ar.edu.itba.pod.hazelcaster.client.config.ClientProperties;
 import ar.edu.itba.pod.hazelcaster.interfaces.CSVSerializer;
 import ar.edu.itba.pod.hazelcaster.interfaces.QueryService;
-
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IList;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-
 import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,8 +21,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class Client {
 
-	private static final Logger logger
-		= LoggerFactory.getLogger(Client.class);
+	private static final Logger logger = LoggerFactory.getLogger(Client.class);
+	private static final Logger timeLogger = LoggerFactory.getLogger("time-logger");
 
 	protected final HazelcastInstance hazelcast;
 	protected final ClientProperties properties;
@@ -63,62 +56,50 @@ public class Client {
 		logger.info("Hazelcaster client exiting...");
 	}
 
-	private static final Logger timeLogger = LoggerFactory.getLogger("time-logger");
-
-	public void run() {
+	public void run()
+			throws IOException, InterruptedException, ExecutionException {
 		if (hazelcast == null) {
 			logger.error("No se pudo desplegar la instancia de Hazelcast.");
 			return;
 		}
-		try {
-			timeLogger.info("Inicio de lectura de archivos CSV de entrada.");
-			final List<Airport> airports = csv.read(Airport.class, properties.getAirportsFilename());
-			final List<Movement> movements = csv.read(Movement.class, properties.getMovementsFilename());
-			timeLogger.info("Fin de lectura de archivos CSV de entrada.");
-			int queryId = properties.getQueryID();
-			
-			IList<Airport> airportsIList = hazelcast.getList(properties.getClusterName() + "-airports");
-			IList<Movement> movementsIList = hazelcast.getList(properties.getClusterName() + "-movements"); 
+		timeLogger.info("Inicio de lectura de archivos CSV de entrada.");
+		final List<Airport> airports = csv.read(Airport.class, properties.getAirportsFilename());
+		final List<Movement> movements = csv.read(Movement.class, properties.getMovementsFilename());
+		timeLogger.info("Fin de lectura de archivos CSV de entrada. Limpiando cluster...");
 
-			airportsIList.clear();
-			airportsIList.addAll(airports);
-			
-			movementsIList.clear();
-			movementsIList.addAll(movements);
-			
-			switch (queryId) {
-				case 1:
-					List<MoveCountOutput> result1 = qService.getAirportsMovements();
-					csv.write(result1, properties.getResultFilename());
-					break;
-				case 2:
-					List<SameMovesPairOutput> result2 = qService.getAirportsPairsWithSameMovements();
-					csv.write(result2, properties.getResultFilename());
-					break;
-				case 3:
-					List<MovesBetweenAirportsOutput> result3 = qService.getMovementsBetweenAirports();
-					csv.write(result3, properties.getResultFilename());
-					break;
-				case 4:
-					List<LandingMoveCountOutput> result4 = qService.getAirportsWithMostLandings(
-							properties.getOACI(),
-							properties.getN());
-					csv.write(result4, properties.getResultFilename());
-					break;
-			}
-			
-			// En 'properties' están todas las properties.
-			// Cargarlas en el cluster.
+		final IList<Airport> airportsIList = hazelcast.getList(properties.getClusterName() + "-airports");
+		final IList<Movement> movementsIList = hazelcast.getList(properties.getClusterName() + "-movements");
+
+		// Clean cluster, and load data:
+		airportsIList.clear();
+		movementsIList.clear();
+		airportsIList.addAll(airports);
+		movementsIList.addAll(movements);
+
+		List<?> result = null;
+		timeLogger.info("Cluster limpio. Inicio de la consulta {} bajo map-reduce.", properties.getQueryID());
+		switch (properties.getQueryID()) {
+			case 1:
+				result = qService.getAirportsMovements();
+				break;
+			case 2:
+				result = qService.getAirportsPairsWithSameMovements();
+				break;
+			case 3:
+				result = qService.getMovementsBetweenAirports();
+				break;
+			case 4:
+				result = qService.getAirportsWithMostLandings(properties.getOACI(), properties.getN());
+				break;
+			case 5:
+				//result = qService.getAirportsWithMostInternationalLandings(properties.getN());
+				break;
+			case 6:
+				//result = qService.getProvincesPairsWithMovements(properties.getMin());
+				break;
 		}
-		catch (final IOException exception) {
-			exception.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		csv.write(result, properties.getResultFilename());
+		timeLogger.info("Fin de la consulta {} bajo map-reduce. Descargada en CSV.", properties.getQueryID());
 		hazelcast.shutdown();
 	}
 }

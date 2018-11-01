@@ -1,12 +1,14 @@
 package ar.edu.itba.pod.hazelcaster.backend;
 
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
+import ar.edu.itba.pod.hazelcaster.abstractions.collators.*;
+import ar.edu.itba.pod.hazelcaster.abstractions.combiners.*;
+import ar.edu.itba.pod.hazelcaster.abstractions.mappers.*;
+import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.*;
+import ar.edu.itba.pod.hazelcaster.abstractions.reducers.*;
+import ar.edu.itba.pod.hazelcaster.abstractions.Airport;
+import ar.edu.itba.pod.hazelcaster.abstractions.Movement;
+import ar.edu.itba.pod.hazelcaster.interfaces.QueryService;
+import ar.edu.itba.pod.hazelcaster.interfaces.properties.HazelcasterProperties;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.ICompletableFuture;
 import com.hazelcast.core.IList;
@@ -14,32 +16,11 @@ import com.hazelcast.core.IMap;
 import com.hazelcast.mapreduce.Job;
 import com.hazelcast.mapreduce.JobTracker;
 import com.hazelcast.mapreduce.KeyValueSource;
-
-import ar.edu.itba.pod.hazelcaster.abstractions.Airport;
-import ar.edu.itba.pod.hazelcaster.abstractions.Movement;
-import ar.edu.itba.pod.hazelcaster.abstractions.collators.LandingMoveCountCollator;
-import ar.edu.itba.pod.hazelcaster.abstractions.collators.MoveCountCollator;
-import ar.edu.itba.pod.hazelcaster.abstractions.collators.MovesBetweenAirportsCollator;
-import ar.edu.itba.pod.hazelcaster.abstractions.collators.OaciDenominationCollator;
-import ar.edu.itba.pod.hazelcaster.abstractions.collators.SameMovesPairCollator;
-import ar.edu.itba.pod.hazelcaster.abstractions.combiners.MoveCountCombinerFactory;
-import ar.edu.itba.pod.hazelcaster.abstractions.combiners.MovesBetweenAirportsCombinerFactory;
-import ar.edu.itba.pod.hazelcaster.abstractions.mappers.LandingMoveCountMapper;
-import ar.edu.itba.pod.hazelcaster.abstractions.mappers.MoveCountMapper;
-import ar.edu.itba.pod.hazelcaster.abstractions.mappers.MovesBetweenAirportsMapper;
-import ar.edu.itba.pod.hazelcaster.abstractions.mappers.OaciDenominationMapper;
-import ar.edu.itba.pod.hazelcaster.abstractions.mappers.SameMovesPairMapper;
-import ar.edu.itba.pod.hazelcaster.abstractions.mappers.ThousandMovesMapper;
-import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.LandingMoveCountOutput;
-import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.MoveCountOutput;
-import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.MovesBetweenAirportsOutput;
-import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.SameMovesPairOutput;
-import ar.edu.itba.pod.hazelcaster.abstractions.reducers.LandingMoveCountReducerFactory;
-import ar.edu.itba.pod.hazelcaster.abstractions.reducers.MoveCountReducerFactory;
-import ar.edu.itba.pod.hazelcaster.abstractions.reducers.MovesBetweenAirportsReducerFactory;
-import ar.edu.itba.pod.hazelcaster.abstractions.reducers.SameMovesPairReducerFactory;
-import ar.edu.itba.pod.hazelcaster.interfaces.QueryService;
-import ar.edu.itba.pod.hazelcaster.interfaces.properties.HazelcasterProperties;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 	/**
 	* <p>Implementación concreta de las consultas, basada en una arquitectura

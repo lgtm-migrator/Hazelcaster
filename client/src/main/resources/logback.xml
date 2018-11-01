@@ -7,13 +7,24 @@
 			<outputPatternAsHeader>false</outputPatternAsHeader>
 		</encoder>
 	</appender>
-	<root level = "${log.level}"><!-- Era DEBUG -->
+	<appender name = "time-appender" class = "ch.qos.logback.core.FileAppender">
+		<file>${timeOutPath}</file>
+		<append>false</append>
+		<immediateFlush>true</immediateFlush>
+		<encoder>
+			<charset>UTF-8</charset>
+			<pattern>%d{dd/MM/yyyy HH:mm:ss.SSSS} %-5level [%thread] %logger{36} - [%file:%line] - %msg%n</pattern>
+			<outputPatternAsHeader>false</outputPatternAsHeader>
+		</encoder>
+	</appender>
+	<root level = "${log.level}">
 		<appender-ref ref = "hazelcaster-appender"/>
 	</root>
-	<logger name = "com.hazelcast" level = "DEBUG" additivity = "false">
+	<logger name = "com.hazelcast" level = "${log.level}" additivity = "false">
 		<appender-ref ref = "hazelcaster-appender"/>
 	</logger>
-	<logger name = "time-logger" level = "INFO" additivity = "false">
+	<logger name = "time-logger" level = "${log.level}" additivity = "false">
+		<appender-ref ref = "time-appender"/>
 		<appender-ref ref = "hazelcaster-appender"/>
 	</logger>
 </configuration>

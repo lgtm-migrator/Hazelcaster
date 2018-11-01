@@ -31,13 +31,12 @@
 	<jobtracker name = "${hazelcaster.cluster.name}-jobtracker">
 		<max-thread-size>0</max-thread-size>
 		<queue-size>0</queue-size>
-		<!-- ¿Cuánto debería ser? -->
 		<chunk-size>1024</chunk-size>
 		<communicate-stats>false</communicate-stats>
 		<topology-changed-strategy>CANCEL_RUNNING_OPERATION</topology-changed-strategy>
 	</jobtracker>
 
-	<!-- Distributed Data Structures -->
+	<!-- Distributed Data Structures for Map-Reduce -->
 	<map name = "${hazelcaster.cluster.name}-map">
 		<in-memory-format>BINARY</in-memory-format>
 
@@ -56,4 +55,23 @@
 		<merge-policy>com.hazelcast.map.merge.PutIfAbsentMapMergePolicy</merge-policy>
 	</map>
 
+	<!-- Main Data Structures -->
+	<list name = "${hazelcaster.cluster.name}-airports">
+		<!-- Backup configuration. -->
+		<backup-count>1</backup-count>
+	</list>
+	<list name = "${hazelcaster.cluster.name}-movements">
+		<!-- Backup configuration. -->
+		<backup-count>1</backup-count>
+	</list>
+
+	<!-- Intermediate Data Structures -->
+	<list name = "${hazelcaster.cluster.name}-movecounts">
+		<!-- Backup configuration. -->
+		<backup-count>1</backup-count>
+	</list>
+	<list name = "${hazelcaster.cluster.name}-movements">
+		<!-- Backup configuration. -->
+		<backup-count>1</backup-count>
+	</list>
 </hazelcast>

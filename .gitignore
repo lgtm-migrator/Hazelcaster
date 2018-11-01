@@ -13,10 +13,12 @@ target/
 # Files:
 #
 
-*.jar
-*.war
 *.iml
 *.iws
+*.jar
+*.log
+*.war
+*_IS_UNDEFINED
 *~
 .DS_Store
 .classpath
@@ -28,3 +30,4 @@ target/
 #
 
 *.csv
+*.txt

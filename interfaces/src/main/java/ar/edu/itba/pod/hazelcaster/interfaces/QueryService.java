@@ -1,14 +1,10 @@
 package ar.edu.itba.pod.hazelcaster.interfaces;
 
+import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.*;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.LandingMoveCountOutput;
-import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.MoveCountOutput;
-import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.MovesBetweenAirportsOutput;
-import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.SameMovesPairOutput;
-
-/**
+	/**
 	* <p>Las 6 queries requeridas por la cátedra.</p>
 	*/
 
