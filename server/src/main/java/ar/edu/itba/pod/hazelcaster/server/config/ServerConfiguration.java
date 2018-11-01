@@ -29,6 +29,8 @@ public class ServerConfiguration {
 		final Properties properties = new Properties();
 		properties.setProperty("hazelcaster.cluster.name", hazelcasterProperties.getClusterName());
 		properties.setProperty("hazelcaster.cluster.key", hazelcasterProperties.getClusterKey());
+		properties.setProperty("hazelcaster.sync.replicas", Integer.toString(hazelcasterProperties.getSyncReplicas()));
+		System.out.println("REPLICAS: " + hazelcasterProperties.getSyncReplicas());
 		System.setProperty("hazelcast.logging.type", "slf4j");
 		return properties;
 	}

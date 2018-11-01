@@ -78,7 +78,7 @@ public class Client {
 
 		List<?> result = null;
 		timeLogger.info("Cluster limpio. Inicio de la consulta {} bajo map-reduce.", properties.getQueryID());
-		
+
 		switch (properties.getQueryID()) {
 			case 1:
 				result = qService.getAirportsMovements();
@@ -90,7 +90,7 @@ public class Client {
 				result = qService.getMovementsBetweenAirports();
 				break;
 			case 4:
-				result = qService.getAirportsWithMostLandings(properties.getOACI(),properties.getN());
+				result = qService.getAirportsWithMostLandings(properties.getOACI(), properties.getN());
 				break;
 			case 5:
 				result = qService.getAirportsWithMostInternationalLandings(properties.getN());
@@ -99,7 +99,7 @@ public class Client {
 				result = qService.getProvincesPairsWithMovements(properties.getMin());
 				break;
 		}
-		
+
 		csv.write(result, properties.getResultFilename());
 		timeLogger.info("Fin de la consulta {} bajo map-reduce. Descargada en CSV.", properties.getQueryID());
 		hazelcast.shutdown();

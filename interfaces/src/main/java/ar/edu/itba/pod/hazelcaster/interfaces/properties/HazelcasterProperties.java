@@ -9,4 +9,5 @@ public interface HazelcasterProperties {
 	public String getClusterKey();
 	public List<String> getInterfaces();
 	public List<String> getAddresses();
+	public int getSyncReplicas();
 }
