@@ -17,20 +17,24 @@ import com.hazelcast.mapreduce.KeyValueSource;
 
 import ar.edu.itba.pod.hazelcaster.abstractions.Airport;
 import ar.edu.itba.pod.hazelcaster.abstractions.Movement;
+import ar.edu.itba.pod.hazelcaster.abstractions.collators.LandingMoveCountCollator;
 import ar.edu.itba.pod.hazelcaster.abstractions.collators.MoveCountCollator;
 import ar.edu.itba.pod.hazelcaster.abstractions.collators.MovesBetweenAirportsCollator;
 import ar.edu.itba.pod.hazelcaster.abstractions.collators.OaciDenominationCollator;
 import ar.edu.itba.pod.hazelcaster.abstractions.collators.SameMovesPairCollator;
 import ar.edu.itba.pod.hazelcaster.abstractions.combiners.MoveCountCombinerFactory;
 import ar.edu.itba.pod.hazelcaster.abstractions.combiners.MovesBetweenAirportsCombinerFactory;
+import ar.edu.itba.pod.hazelcaster.abstractions.mappers.LandingMoveCountMapper;
 import ar.edu.itba.pod.hazelcaster.abstractions.mappers.MoveCountMapper;
 import ar.edu.itba.pod.hazelcaster.abstractions.mappers.MovesBetweenAirportsMapper;
 import ar.edu.itba.pod.hazelcaster.abstractions.mappers.OaciDenominationMapper;
 import ar.edu.itba.pod.hazelcaster.abstractions.mappers.SameMovesPairMapper;
 import ar.edu.itba.pod.hazelcaster.abstractions.mappers.ThousandMovesMapper;
+import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.LandingMoveCountOutput;
 import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.MoveCountOutput;
 import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.MovesBetweenAirportsOutput;
 import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.SameMovesPairOutput;
+import ar.edu.itba.pod.hazelcaster.abstractions.reducers.LandingMoveCountReducerFactory;
 import ar.edu.itba.pod.hazelcaster.abstractions.reducers.MoveCountReducerFactory;
 import ar.edu.itba.pod.hazelcaster.abstractions.reducers.MovesBetweenAirportsReducerFactory;
 import ar.edu.itba.pod.hazelcaster.abstractions.reducers.SameMovesPairReducerFactory;
@@ -138,8 +142,23 @@ public class MapReduceBasedQueryService implements QueryService {
 	}
 
 	@Override
-	public void getAirportsWithMostLandings(final String oaci, final int airports) {
-		// TODO Auto-generated method stub
+	public List<LandingMoveCountOutput> getAirportsWithMostLandings(final String oaci, final int airports) 
+			throws InterruptedException, ExecutionException {
+		
+		JobTracker jobTracker = hazelcastInstance.getJobTracker(properties.getClusterName() + "-jobtracker");
+		
+		IList<Movement> movementsIList = hazelcastInstance.getList(properties.getClusterName() + "-movements");
+		
+		final KeyValueSource<String, Movement> movementSource = KeyValueSource.fromList(movementsIList);
+		Job<String, Movement> movementJob = jobTracker.newJob(movementSource);
+		
+		ICompletableFuture<List<LandingMoveCountOutput>> landingMovesFuture = movementJob
+				.mapper(new LandingMoveCountMapper(oaci))
+				.combiner(new MoveCountCombinerFactory())
+				.reducer(new LandingMoveCountReducerFactory())
+				.submit(new LandingMoveCountCollator(airports));
+		
+		return landingMovesFuture.get();
 	}
 
 	@Override
