@@ -6,7 +6,7 @@ import java.util.Map;
 
 import com.hazelcast.mapreduce.Collator;
 
-public class OaciDenominationCollator implements Collator<Map.Entry<String,List<String>>, Map<String,String>> {
+public class StringMapCollator implements Collator<Map.Entry<String,List<String>>, Map<String,String>> {
 
 	@Override
 	public Map<String, String> collate(Iterable<Map.Entry<String, List<String>>> values) {

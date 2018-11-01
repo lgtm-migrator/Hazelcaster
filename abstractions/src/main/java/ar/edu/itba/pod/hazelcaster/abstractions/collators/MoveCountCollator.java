@@ -23,8 +23,15 @@ public class MoveCountCollator implements Collator<Map.Entry<String,MoveCountOut
 		
 		TreeSet<MoveCountOutput> result = new TreeSet<>();
 		values.forEach(entry -> {
+			
 			MoveCountOutput entryValue = entry.getValue();
-			entryValue.setDenomination(oaciDenominationMap.get(entry.getKey()));
+			String denomination = oaciDenominationMap.get(entry.getKey());
+			
+			if (denomination == null) {
+				denomination = "";
+			}
+			
+			entryValue.setDenomination(denomination);
 			result.add(entryValue);
 		});
 		

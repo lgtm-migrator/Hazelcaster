@@ -3,6 +3,7 @@ package ar.edu.itba.pod.hazelcaster.interfaces;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.InternationalPercentageOutput;
 import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.LandingMoveCountOutput;
 import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.MoveCountOutput;
 import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.MovesBetweenAirportsOutput;
@@ -26,6 +27,8 @@ public interface QueryService {
 	public List<LandingMoveCountOutput> getAirportsWithMostLandings(final String oaci, final int airports) 
 			throws InterruptedException, ExecutionException;
 	
-	public void getAirportsWithMostInternationalLandings(final int airports);
+	public List<InternationalPercentageOutput> getAirportsWithMostInternationalLandings(final int airports)
+			throws InterruptedException, ExecutionException;
+	
 	public void getProvincesPairsWithMovements(final int minMovements);
 }

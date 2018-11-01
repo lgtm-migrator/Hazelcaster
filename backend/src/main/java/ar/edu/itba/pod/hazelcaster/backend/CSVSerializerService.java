@@ -5,6 +5,7 @@ import ar.edu.itba.pod.hazelcaster.backend.mapper.*;
 import ar.edu.itba.pod.hazelcaster.abstractions.Airport;
 import ar.edu.itba.pod.hazelcaster.abstractions.Movement;
 import ar.edu.itba.pod.hazelcaster.abstractions.exception.UnmappedTypeException;
+import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.InternationalPercentageOutput;
 import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.LandingMoveCountOutput;
 import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.MoveCountOutput;
 import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.MovesBetweenAirportsOutput;
@@ -46,6 +47,7 @@ public class CSVSerializerService implements CSVSerializer {
 		addMapper(SameMovesPairOutput.class, new SameMovesPairOutputMapper());
 		addMapper(MovesBetweenAirportsOutput.class, new MovesBetweenAirportsOutputMapper());
 		addMapper(LandingMoveCountOutput.class, new LandingMoveCountOutputMapper());
+		addMapper(InternationalPercentageOutput.class, new InternationalPercentageOutputMapper());
 		// Agregar más mappers...
 	}
 

@@ -26,7 +26,7 @@ public class LandingMoveCountCollator implements Collator<Map.Entry<String,Long>
 			result.add(new LandingMoveCountOutput(entry.getKey(), entry.getValue()));
 		});
 		
-		return result.parallelStream().sorted().collect(Collectors.toList()).subList(0, limit);
+		return result.parallelStream().sorted().collect(Collectors.toList()).subList(0, Math.min(limit, result.size()));
 	}
 
 }

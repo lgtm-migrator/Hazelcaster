@@ -2,6 +2,7 @@ package ar.edu.itba.pod.hazelcaster.client;
 
 import ar.edu.itba.pod.hazelcaster.abstractions.Airport;
 import ar.edu.itba.pod.hazelcaster.abstractions.Movement;
+import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.InternationalPercentageOutput;
 import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.LandingMoveCountOutput;
 import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.MoveCountOutput;
 import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.MovesBetweenAirportsOutput;
@@ -104,6 +105,11 @@ public class Client {
 							properties.getOACI(),
 							properties.getN());
 					csv.write(result4, properties.getResultFilename());
+					break;
+				case 5:
+					List<InternationalPercentageOutput> result5 = qService.getAirportsWithMostInternationalLandings(
+							properties.getN());
+					csv.write(result5, properties.getResultFilename());
 					break;
 			}
 			
