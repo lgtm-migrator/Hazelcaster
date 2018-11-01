@@ -25,5 +25,6 @@ public interface QueryService {
 	public List<InternationalPercentageOutput> getAirportsWithMostInternationalLandings(final int airports)
 			throws InterruptedException, ExecutionException;
 	
-	public void getProvincesPairsWithMovements(final int minMovements);
+	public List<MovesBetweenProvincesOutput> getProvincesPairsWithMovements(final int minMovements) 
+			throws InterruptedException, ExecutionException;
 }

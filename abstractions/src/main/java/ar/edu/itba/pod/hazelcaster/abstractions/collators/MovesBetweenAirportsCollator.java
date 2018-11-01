@@ -10,7 +10,7 @@ import com.hazelcast.mapreduce.Collator;
 
 import ar.edu.itba.pod.hazelcaster.abstractions.LongPair;
 import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.MovesBetweenAirportsOutput;
-import utils.OaciPairKeyManager;
+import utils.StringPairKeyManager;
 
 public class MovesBetweenAirportsCollator implements Collator<Map.Entry<String, LongPair>, List<MovesBetweenAirportsOutput>> {
 
@@ -19,7 +19,7 @@ public class MovesBetweenAirportsCollator implements Collator<Map.Entry<String, 
 		
 		TreeSet<MovesBetweenAirportsOutput> result = new TreeSet<>();
 		values.forEach(entry -> {
-			String[] oacis = OaciPairKeyManager.getOaciPair(entry.getKey());
+			String[] oacis = StringPairKeyManager.getStringPair(entry.getKey());
 			result.add(new MovesBetweenAirportsOutput(
 					oacis[0], 
 					oacis[1], 

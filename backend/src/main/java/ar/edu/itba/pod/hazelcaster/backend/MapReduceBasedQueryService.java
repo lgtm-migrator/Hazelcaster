@@ -174,7 +174,35 @@ public class MapReduceBasedQueryService implements QueryService {
 	}
 
 	@Override
-	public void getProvincesPairsWithMovements(final int minMovements) {
-		// TODO Auto-generated method stub	
+	public List<MovesBetweenProvincesOutput> getProvincesPairsWithMovements(final int minMovements) throws InterruptedException, ExecutionException {
+		JobTracker jobTracker = hazelcastInstance.getJobTracker(properties.getClusterName() + "-jobtracker");
+		
+		IList<Airport> airportsIList = hazelcastInstance.getList(properties.getClusterName() + "-airports");
+		
+		final KeyValueSource<String, Airport> airportSource = KeyValueSource.fromList(airportsIList);
+		Job<String, Airport> airportJob = jobTracker.newJob(airportSource);
+		
+		// Map from OACI to Province (Airport).
+		ICompletableFuture<Map<String, String>> oaciProvinceMapFuture = airportJob
+				.mapper(new OaciProvinceMapper())
+				.submit(new StringMapCollator());
+		
+		Map<String, String> oaciProvinceMap = oaciProvinceMapFuture.get();
+		
+		List<MovesBetweenAirportsOutput> movesBetweenAirports = getMovementsBetweenAirports();
+		IList<MovesBetweenAirportsOutput> movesBetweenAirportsIList = hazelcastInstance.getList(properties.getClusterName() + "-movesBetweenAirports");
+		
+		movesBetweenAirportsIList.clear();
+		movesBetweenAirportsIList.addAll(movesBetweenAirports);
+		
+		final KeyValueSource<String, MovesBetweenAirportsOutput> movementSource = KeyValueSource.fromList(movesBetweenAirportsIList);
+		Job<String, MovesBetweenAirportsOutput> movementJob = jobTracker.newJob(movementSource);
+		
+		ICompletableFuture<List<MovesBetweenProvincesOutput>> movesBetweenProvincesFuture = movementJob
+				.mapper(new MovesBetweenProvincesMapper(oaciProvinceMap))
+				.reducer(new MovesBetweenProvincesReducerFactory())
+				.submit(new MovesBetweenProvincesCollator(minMovements));
+		
+		return movesBetweenProvincesFuture.get();
 	}
 }

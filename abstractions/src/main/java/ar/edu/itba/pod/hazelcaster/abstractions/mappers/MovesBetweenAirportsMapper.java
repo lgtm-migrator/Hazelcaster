@@ -5,7 +5,7 @@ import com.hazelcast.mapreduce.Mapper;
 
 import ar.edu.itba.pod.hazelcaster.abstractions.LongPair;
 import ar.edu.itba.pod.hazelcaster.abstractions.Movement;
-import utils.OaciPairKeyManager;
+import utils.StringPairKeyManager;
 
 public class MovesBetweenAirportsMapper implements Mapper<String, Movement, String, LongPair> {
 
@@ -22,10 +22,10 @@ public class MovesBetweenAirportsMapper implements Mapper<String, Movement, Stri
 		}
 		
 		context.emit(
-				OaciPairKeyManager.getKey(value.getOrigin(), value.getDestination()), 
+				StringPairKeyManager.getKey(value.getOrigin(), value.getDestination()), 
 				new LongPair(1L, 0L));
 		context.emit(
-				OaciPairKeyManager.getKey(value.getDestination(), value.getOrigin()), 
+				StringPairKeyManager.getKey(value.getDestination(), value.getOrigin()), 
 				new LongPair(0L, 1L));
 	}
 

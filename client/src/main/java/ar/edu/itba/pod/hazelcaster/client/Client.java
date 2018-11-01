@@ -96,7 +96,7 @@ public class Client {
 				result = qService.getAirportsWithMostInternationalLandings(properties.getN());
 				break;
 			case 6:
-				//qService.getProvincesPairsWithMovements(minMovements);
+				result = qService.getProvincesPairsWithMovements(properties.getMin());
 				break;
 		}
 		

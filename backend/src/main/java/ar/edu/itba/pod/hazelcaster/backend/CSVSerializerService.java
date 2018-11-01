@@ -9,6 +9,7 @@ import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.InternationalPerce
 import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.LandingMoveCountOutput;
 import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.MoveCountOutput;
 import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.MovesBetweenAirportsOutput;
+import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.MovesBetweenProvincesOutput;
 import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.SameMovesPairOutput;
 import ar.edu.itba.pod.hazelcaster.interfaces.CSVSerializer;
 import ar.edu.itba.pod.hazelcaster.interfaces.MapperService;
@@ -48,6 +49,7 @@ public class CSVSerializerService implements CSVSerializer {
 		addMapper(MovesBetweenAirportsOutput.class, new MovesBetweenAirportsOutputMapper());
 		addMapper(LandingMoveCountOutput.class, new LandingMoveCountOutputMapper());
 		addMapper(InternationalPercentageOutput.class, new InternationalPercentageOutputMapper());
+		addMapper(MovesBetweenProvincesOutput.class, new MovesBetweenProvincesOutputMapper());
 		// Agregar más mappers...
 	}
 
