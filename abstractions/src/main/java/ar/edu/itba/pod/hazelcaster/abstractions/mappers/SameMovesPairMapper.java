@@ -1,21 +1,30 @@
 package ar.edu.itba.pod.hazelcaster.abstractions.mappers;
 
+import java.util.List;
+
 import com.hazelcast.mapreduce.Context;
 import com.hazelcast.mapreduce.Mapper;
 
-import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.MoveCountOutput;
+import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.SameMovesPairOutput;
 
-public class SameMovesPairMapper implements Mapper<String, MoveCountOutput, Long, String> {
+public class SameMovesPairMapper implements Mapper<Long, List<String>, Long, SameMovesPairOutput> {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8042113535216100355L;
+	private static final long serialVersionUID = -2844411929743761562L;
 
 	@Override
-	public void map(String key, MoveCountOutput value, Context<Long, String> context) {
-
-		context.emit(value.getCount(), value.getOaci());
+	public void map(Long key, List<String> value, Context<Long, SameMovesPairOutput> context) {
+		
+		int size = value.size();
+		if (size >= 2) {
+			for (int i = 0; i < size; i++) {
+				for (int j = i + 1; j < size; j++) {
+					context.emit(key, new SameMovesPairOutput(key, value.get(i), value.get(j)));
+				}
+			}
+		}
 	}
-
+	
 }

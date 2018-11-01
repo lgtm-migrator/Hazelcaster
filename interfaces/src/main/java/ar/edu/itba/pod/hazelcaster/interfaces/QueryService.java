@@ -20,8 +20,7 @@ public interface QueryService {
 
 	public List<MoveCountOutput> getAirportsMovements() throws InterruptedException, ExecutionException;
 	
-	public List<SameMovesPairOutput> getAirportsPairsWithSameMovements(List<Movement> movements,
-			List<Airport> airports) throws InterruptedException, ExecutionException;
+	public List<SameMovesPairOutput> getAirportsPairsWithSameMovements() throws InterruptedException, ExecutionException;
 	
 	public void getMovementsBetweenAirports();
 

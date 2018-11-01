@@ -76,14 +76,14 @@ public class Client {
 			timeLogger.info("Fin de lectura de archivos CSV de entrada.");
 			int queryId = properties.getQueryID();
 			
-			IList<Airport> airportsList = hazelcast.getList(properties.getClusterName() + "-airports");
-			IList<Movement> movementsList = hazelcast.getList(properties.getClusterName() + "-movements"); 
+			IList<Airport> airportsIList = hazelcast.getList(properties.getClusterName() + "-airports");
+			IList<Movement> movementsIList = hazelcast.getList(properties.getClusterName() + "-movements"); 
 
-			airportsList.clear();
-			airportsList.addAll(airports);
+			airportsIList.clear();
+			airportsIList.addAll(airports);
 			
-			movementsList.clear();
-			movementsList.addAll(movements);
+			movementsIList.clear();
+			movementsIList.addAll(movements);
 			
 			switch (queryId) {
 				case 1:
@@ -91,8 +91,7 @@ public class Client {
 					csv.write(result1, properties.getResultFilename());
 					break;
 				case 2:
-					List<SameMovesPairOutput> result2 = qService
-							.getAirportsPairsWithSameMovements(movements, airports);
+					List<SameMovesPairOutput> result2 = qService.getAirportsPairsWithSameMovements();
 					csv.write(result2, properties.getResultFilename());
 					break;
 			}

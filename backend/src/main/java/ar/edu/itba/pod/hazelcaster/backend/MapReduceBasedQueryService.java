@@ -1,12 +1,8 @@
 package ar.edu.itba.pod.hazelcaster.backend;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,19 +10,21 @@ import org.springframework.stereotype.Service;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.ICompletableFuture;
 import com.hazelcast.core.IList;
+import com.hazelcast.core.IMap;
 import com.hazelcast.mapreduce.Job;
 import com.hazelcast.mapreduce.JobTracker;
 import com.hazelcast.mapreduce.KeyValueSource;
 
 import ar.edu.itba.pod.hazelcaster.abstractions.Airport;
 import ar.edu.itba.pod.hazelcaster.abstractions.Movement;
-import ar.edu.itba.pod.hazelcaster.abstractions.SameMovesList;
 import ar.edu.itba.pod.hazelcaster.abstractions.collators.MoveCountCollator;
 import ar.edu.itba.pod.hazelcaster.abstractions.collators.OaciDenominationCollator;
+import ar.edu.itba.pod.hazelcaster.abstractions.collators.SameMovesPairCollator;
 import ar.edu.itba.pod.hazelcaster.abstractions.combiners.MoveCountCombinerFactory;
 import ar.edu.itba.pod.hazelcaster.abstractions.mappers.MoveCountMapper;
 import ar.edu.itba.pod.hazelcaster.abstractions.mappers.OaciDenominationMapper;
 import ar.edu.itba.pod.hazelcaster.abstractions.mappers.SameMovesPairMapper;
+import ar.edu.itba.pod.hazelcaster.abstractions.mappers.ThousandMovesMapper;
 import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.MoveCountOutput;
 import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.SameMovesPairOutput;
 import ar.edu.itba.pod.hazelcaster.abstractions.reducers.MoveCountReducerFactory;
@@ -54,10 +52,10 @@ public class MapReduceBasedQueryService implements QueryService {
 		
 		JobTracker jobTracker = hazelcastInstance.getJobTracker(properties.getClusterName() + "-jobtracker");
 		
-		IList<Airport> airportsList = hazelcastInstance.getList(properties.getClusterName() + "-airports");
-		IList<Movement> movementsList = hazelcastInstance.getList(properties.getClusterName() + "-movements");
+		IList<Airport> airportsIList = hazelcastInstance.getList(properties.getClusterName() + "-airports");
+		IList<Movement> movementsIList = hazelcastInstance.getList(properties.getClusterName() + "-movements");
 		
-		final KeyValueSource<String, Airport> airportSource = KeyValueSource.fromList(airportsList);
+		final KeyValueSource<String, Airport> airportSource = KeyValueSource.fromList(airportsIList);
 		Job<String, Airport> airportJob = jobTracker.newJob(airportSource);
 		
 		// Map from OACI to Denomination (Airport).
@@ -67,7 +65,7 @@ public class MapReduceBasedQueryService implements QueryService {
 		
 		Map<String, String> oaciDenominationMap = oaciDenominationMapFuture.get();
 		
-		final KeyValueSource<String, Movement> movementSource = KeyValueSource.fromList(movementsList);
+		final KeyValueSource<String, Movement> movementSource = KeyValueSource.fromList(movementsIList);
 		Job<String, Movement> movementJob = jobTracker.newJob(movementSource);
 		
 		ICompletableFuture<List<MoveCountOutput>> future = movementJob
@@ -80,53 +78,40 @@ public class MapReduceBasedQueryService implements QueryService {
 	}
 
 	@Override
-	public List<SameMovesPairOutput> getAirportsPairsWithSameMovements(List<Movement> movements,
-			List<Airport> airports) throws InterruptedException, ExecutionException {
+	public List<SameMovesPairOutput> getAirportsPairsWithSameMovements() throws InterruptedException, ExecutionException {
 		
+		JobTracker jobTracker = hazelcastInstance.getJobTracker(properties.getClusterName() + "-jobtracker");
+				
 		List<MoveCountOutput> moveCounts = getAirportsMovements();
+		IList<MoveCountOutput> moveCountsIList = hazelcastInstance.getList(properties.getClusterName() + "-movecounts");
 		
-		moveCounts = moveCounts.parallelStream()
-				.filter(element -> !(element.getCount() < 1000L))
-				.map(element -> {
-					element.setCount((element.getCount()/1000)*1000);
-					return element;
-				})
-				.collect(Collectors.toList());
+		moveCountsIList.clear();
+		moveCountsIList.addAll(moveCounts);
 		
-		JobTracker jobTracker = hazelcastInstance.getJobTracker("default");
-		IList<MoveCountOutput> moveCountIList = hazelcastInstance.getList("query2");
+		// Obtain map from thousands to list of oaci. 2000 -> A,B,C,D
+		final KeyValueSource<String, MoveCountOutput> countSource = KeyValueSource.fromList(moveCountsIList);
+		Job<String, MoveCountOutput> sameMovesJob = jobTracker.newJob(countSource);
 		
-		moveCountIList.clear();
-		moveCountIList.addAll(moveCounts);
-		
-		final KeyValueSource<String, MoveCountOutput> source = KeyValueSource.fromList(moveCountIList);
-		Job<String, MoveCountOutput> job = jobTracker.newJob(source);
-		
-		ICompletableFuture<Map<Long, SameMovesList>> future = job
-				.mapper(new SameMovesPairMapper())
+		ICompletableFuture<Map<Long, List<String>>> sameMovesFuture = sameMovesJob
+				.mapper(new ThousandMovesMapper())
 				.reducer(new SameMovesPairReducerFactory())
 				.submit();
 		
-		Map<Long, SameMovesList> resultMap = future.get();
+		Map<Long, List<String>> sameMovesMap = sameMovesFuture.get();
 		
-		List<SameMovesList> processedList = resultMap.values().parallelStream()
-				.filter(list -> !(list.getOaciList().size() < 2))
-				.sorted()
-				.collect(Collectors.toList());
+		IMap<Long, List<String>> sameMovesIMap = hazelcastInstance.getMap(properties.getClusterName() + "-map");
 		
-		List<SameMovesPairOutput> output = new ArrayList<>();
+		sameMovesIMap.clear();
+		sameMovesIMap.putAll(sameMovesMap);
 		
-		for (SameMovesList list : processedList) {
-			Long count = list.getCount();
-			List<String> oaciList = list.getOaciList();
-			for (int i = 0; i < oaciList.size(); i++) {
-				for (int j = i + 1; j < oaciList.size(); j++) {
-					output.add(new SameMovesPairOutput(count, oaciList.get(i), oaciList.get(j)));
-				}
-			}
-		}
+		final KeyValueSource<Long, List<String>> pairsSource = KeyValueSource.fromMap(sameMovesIMap);
+		Job<Long, List<String>> pairsJob = jobTracker.newJob(pairsSource);
 		
-		return output;
+		ICompletableFuture<List<SameMovesPairOutput>> pairsFuture = pairsJob
+				.mapper(new SameMovesPairMapper())
+				.submit(new SameMovesPairCollator());
+		
+		return pairsFuture.get();
 	}
 
 	@Override
