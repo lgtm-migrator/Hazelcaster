@@ -55,6 +55,12 @@ public class Movement implements DataSerializable {
 		return destination;
 	}
 
+	@Override
+	public String toString() {
+		return "Movement [classification=" + classification + ", type=" + type + ", origin=" + origin + ", destination="
+				+ destination + "]";
+	}
+
 	public static class Builder {
 
 		protected FlightType classification;

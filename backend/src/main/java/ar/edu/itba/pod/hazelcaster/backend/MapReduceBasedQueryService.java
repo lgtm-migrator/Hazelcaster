@@ -18,16 +18,21 @@ import com.hazelcast.mapreduce.KeyValueSource;
 import ar.edu.itba.pod.hazelcaster.abstractions.Airport;
 import ar.edu.itba.pod.hazelcaster.abstractions.Movement;
 import ar.edu.itba.pod.hazelcaster.abstractions.collators.MoveCountCollator;
+import ar.edu.itba.pod.hazelcaster.abstractions.collators.MovesBetweenAirportsCollator;
 import ar.edu.itba.pod.hazelcaster.abstractions.collators.OaciDenominationCollator;
 import ar.edu.itba.pod.hazelcaster.abstractions.collators.SameMovesPairCollator;
 import ar.edu.itba.pod.hazelcaster.abstractions.combiners.MoveCountCombinerFactory;
+import ar.edu.itba.pod.hazelcaster.abstractions.combiners.MovesBetweenAirportsCombinerFactory;
 import ar.edu.itba.pod.hazelcaster.abstractions.mappers.MoveCountMapper;
+import ar.edu.itba.pod.hazelcaster.abstractions.mappers.MovesBetweenAirportsMapper;
 import ar.edu.itba.pod.hazelcaster.abstractions.mappers.OaciDenominationMapper;
 import ar.edu.itba.pod.hazelcaster.abstractions.mappers.SameMovesPairMapper;
 import ar.edu.itba.pod.hazelcaster.abstractions.mappers.ThousandMovesMapper;
 import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.MoveCountOutput;
+import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.MovesBetweenAirportsOutput;
 import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.SameMovesPairOutput;
 import ar.edu.itba.pod.hazelcaster.abstractions.reducers.MoveCountReducerFactory;
+import ar.edu.itba.pod.hazelcaster.abstractions.reducers.MovesBetweenAirportsReducerFactory;
 import ar.edu.itba.pod.hazelcaster.abstractions.reducers.SameMovesPairReducerFactory;
 import ar.edu.itba.pod.hazelcaster.interfaces.QueryService;
 import ar.edu.itba.pod.hazelcaster.interfaces.properties.HazelcasterProperties;
@@ -47,8 +52,7 @@ public class MapReduceBasedQueryService implements QueryService {
 	HazelcasterProperties properties;
 
 	@Override
-	public List<MoveCountOutput> getAirportsMovements() 
-			throws InterruptedException, ExecutionException {
+	public List<MoveCountOutput> getAirportsMovements() throws InterruptedException, ExecutionException {
 		
 		JobTracker jobTracker = hazelcastInstance.getJobTracker(properties.getClusterName() + "-jobtracker");
 		
@@ -115,8 +119,22 @@ public class MapReduceBasedQueryService implements QueryService {
 	}
 
 	@Override
-	public void getMovementsBetweenAirports() {
-		// TODO Auto-generated method stub
+	public List<MovesBetweenAirportsOutput> getMovementsBetweenAirports() throws InterruptedException, ExecutionException {
+		
+		JobTracker jobTracker = hazelcastInstance.getJobTracker(properties.getClusterName() + "-jobtracker");
+		
+		IList<Movement> movementsIList = hazelcastInstance.getList(properties.getClusterName() + "-movements");
+		
+		final KeyValueSource<String, Movement> movementSource = KeyValueSource.fromList(movementsIList);
+		Job<String, Movement> movementJob = jobTracker.newJob(movementSource);
+		
+		ICompletableFuture<List<MovesBetweenAirportsOutput>> movesBetweenAirportsFuture = movementJob
+				.mapper(new MovesBetweenAirportsMapper())
+				.combiner(new MovesBetweenAirportsCombinerFactory())
+				.reducer(new MovesBetweenAirportsReducerFactory())
+				.submit(new MovesBetweenAirportsCollator());
+		
+		return movesBetweenAirportsFuture.get();
 	}
 
 	@Override

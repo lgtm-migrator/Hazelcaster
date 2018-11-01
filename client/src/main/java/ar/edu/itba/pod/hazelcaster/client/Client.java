@@ -3,6 +3,7 @@ package ar.edu.itba.pod.hazelcaster.client;
 import ar.edu.itba.pod.hazelcaster.abstractions.Airport;
 import ar.edu.itba.pod.hazelcaster.abstractions.Movement;
 import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.MoveCountOutput;
+import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.MovesBetweenAirportsOutput;
 import ar.edu.itba.pod.hazelcaster.abstractions.outputObjects.SameMovesPairOutput;
 import ar.edu.itba.pod.hazelcaster.client.config.ClientConfiguration;
 import ar.edu.itba.pod.hazelcaster.client.config.ClientProperties;
@@ -14,7 +15,6 @@ import com.hazelcast.core.IList;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
@@ -93,6 +93,10 @@ public class Client {
 				case 2:
 					List<SameMovesPairOutput> result2 = qService.getAirportsPairsWithSameMovements();
 					csv.write(result2, properties.getResultFilename());
+					break;
+				case 3:
+					List<MovesBetweenAirportsOutput> result3 = qService.getMovementsBetweenAirports();
+					csv.write(result3, properties.getResultFilename());
 					break;
 			}
 			

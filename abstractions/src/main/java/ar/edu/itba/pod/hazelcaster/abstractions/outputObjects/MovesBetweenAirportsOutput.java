@@ -87,4 +87,45 @@ public class MovesBetweenAirportsOutput
 				+ countBA + "]";
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((oaciA == null) ? 0 : oaciA.hashCode());
+		result = prime * result + ((oaciB == null) ? 0 : oaciB.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		MovesBetweenAirportsOutput other = (MovesBetweenAirportsOutput) obj;
+		if (countAB == null) {
+			if (other.countAB != null)
+				return false;
+		} else if (!countAB.equals(other.countAB))
+			return false;
+		if (countBA == null) {
+			if (other.countBA != null)
+				return false;
+		} else if (!countBA.equals(other.countBA))
+			return false;
+		if (oaciA == null) {
+			if (other.oaciA != null)
+				return false;
+		} else if (!oaciA.equals(other.oaciA))
+			return false;
+		if (oaciB == null) {
+			if (other.oaciB != null)
+				return false;
+		} else if (!oaciB.equals(other.oaciB))
+			return false;
+		return true;
+	}
+
 }

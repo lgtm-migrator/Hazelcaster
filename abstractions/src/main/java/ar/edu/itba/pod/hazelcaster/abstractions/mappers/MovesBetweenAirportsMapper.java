@@ -3,9 +3,10 @@ package ar.edu.itba.pod.hazelcaster.abstractions.mappers;
 import com.hazelcast.mapreduce.Context;
 import com.hazelcast.mapreduce.Mapper;
 
+import ar.edu.itba.pod.hazelcaster.abstractions.LongPair;
 import ar.edu.itba.pod.hazelcaster.abstractions.Movement;
 
-public class MovesBetweenAirportsMapper implements Mapper<String, Movement, String, Long> {
+public class MovesBetweenAirportsMapper implements Mapper<String, Movement, String, LongPair> {
 
 	/**
 	 * 
@@ -13,9 +14,14 @@ public class MovesBetweenAirportsMapper implements Mapper<String, Movement, Stri
 	private static final long serialVersionUID = 4894489529750647360L;
 
 	@Override
-	public void map(String key, Movement value, Context<String, Long> context) {
+	public void map(String key, Movement value, Context<String, LongPair> context) {
 		
-		context.emit(value.getOrigin() + "_" + value.getDestination(), 1L);
+		if (value.getDestination().equals(value.getOrigin())) {
+			return;
+		}
+		
+		context.emit(value.getOrigin() + "," + value.getDestination(), new LongPair(1L, 0L));
+		context.emit(value.getDestination() + "," + value.getOrigin(), new LongPair(0L, 1L));
 	}
 
 }
