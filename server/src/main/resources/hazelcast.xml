@@ -39,9 +39,10 @@
 	<!-- Distributed Data Structures for Map-Reduce -->
 	<map name = "${hazelcaster.cluster.name}-map">
 		<in-memory-format>BINARY</in-memory-format>
+		<statistics-enabled>false</statistics-enabled>
 
 		<!-- Backup configuration. -->
-		<backup-count>1</backup-count>
+		<backup-count>${hazelcaster.sync.replicas}</backup-count>
 		<async-backup-count>0</async-backup-count>
 		<read-backup-data>true</read-backup-data>
 
@@ -58,16 +59,19 @@
 	<!-- Main Data Structures -->
 	<list name = "${hazelcaster.cluster.name}-airports">
 		<!-- Backup configuration. -->
-		<backup-count>1</backup-count>
+		<backup-count>${hazelcaster.sync.replicas}</backup-count>
+		<statistics-enabled>false</statistics-enabled>
 	</list>
 	<list name = "${hazelcaster.cluster.name}-movements">
 		<!-- Backup configuration. -->
-		<backup-count>1</backup-count>
+		<backup-count>${hazelcaster.sync.replicas}</backup-count>
+		<statistics-enabled>false</statistics-enabled>
 	</list>
 
 	<!-- Intermediate Data Structures -->
 	<list name = "${hazelcaster.cluster.name}-movecounts">
 		<!-- Backup configuration. -->
-		<backup-count>1</backup-count>
+		<backup-count>${hazelcaster.sync.replicas}</backup-count>
+		<statistics-enabled>false</statistics-enabled>
 	</list>
 </hazelcast>

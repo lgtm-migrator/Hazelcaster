@@ -126,6 +126,11 @@ public class ClientProperties
 		return movementsInPath;
 	}
 
+	@Override
+	public int getSyncReplicas() {
+		return -1;
+	}
+
 	public void setXmlConfig(final String xmlConfig) {
 		this.xmlConfig = xmlConfig;
 	}

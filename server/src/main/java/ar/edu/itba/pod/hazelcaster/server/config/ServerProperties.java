@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
@@ -26,6 +27,9 @@ public class ServerProperties implements HazelcasterProperties {
 
 	@NotBlank
 	protected String interfaces;
+
+	@PositiveOrZero
+	protected int syncReplicas;
 
 	@Override
 	public String getXMLConfigFilename() {
@@ -54,6 +58,11 @@ public class ServerProperties implements HazelcasterProperties {
 		return Collections.emptyList();
 	}
 
+	@Override
+	public int getSyncReplicas() {
+		return syncReplicas;
+	}
+
 	public void setXmlConfig(final String xmlConfig) {
 		this.xmlConfig = xmlConfig;
 	}
@@ -68,5 +77,9 @@ public class ServerProperties implements HazelcasterProperties {
 
 	public void setInterfaces(final String interfaces) {
 		this.interfaces = interfaces;
+	}
+
+	public void setSyncReplicas(final int syncReplicas) {
+		this.syncReplicas = syncReplicas;
 	}
 }

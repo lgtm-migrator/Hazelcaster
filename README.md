@@ -65,6 +65,13 @@ $ ...
 $ java -Dlog.level=INFO ... -jar hazelcaster-client.jar
 ```
 
+You can change the number of synchronous replicas. By default, the cluster will
+use only _1_ replica:
+
+```
+$ java -Dreplicas=0 ... -jar hazelcaster-server.jar
+```
+
 ## Options
 
 The following options are required (they must be set, always):

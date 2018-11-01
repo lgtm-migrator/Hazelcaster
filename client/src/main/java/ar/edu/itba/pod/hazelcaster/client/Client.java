@@ -90,7 +90,7 @@ public class Client {
 				result = qService.getMovementsBetweenAirports();
 				break;
 			case 4:
-				result = qService.getAirportsWithMostLandings(properties.getOACI(),properties.getN());
+				result = qService.getAirportsWithMostLandings(properties.getOACI(), properties.getN());
 				break;
 			case 5:
 				result = qService.getAirportsWithMostInternationalLandings(properties.getN());
