@@ -17,9 +17,7 @@
 			<!-- Only TCP instead of UDP. -->
 			<aws enabled = "false"/>
 			<multicast enabled = "false"/>
-			<tcp-ip enabled = "true">
-				<member>10.17.33.156</member>
-			</tcp-ip>
+			<tcp-ip enabled = "true"/>
 		</join>
 		<port auto-increment = "true" port-count = "64">5701</port>
 		<outbound-ports>

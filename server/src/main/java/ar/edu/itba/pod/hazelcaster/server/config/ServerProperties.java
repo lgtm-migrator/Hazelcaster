@@ -31,6 +31,8 @@ public class ServerProperties implements HazelcasterProperties {
 	@PositiveOrZero
 	protected int syncReplicas;
 
+	protected String coordinator;
+
 	@Override
 	public String getXMLConfigFilename() {
 		return xmlConfig;
@@ -63,6 +65,11 @@ public class ServerProperties implements HazelcasterProperties {
 		return syncReplicas;
 	}
 
+	@Override
+	public String getCoordinator() {
+		return coordinator;
+	}
+
 	public void setXmlConfig(final String xmlConfig) {
 		this.xmlConfig = xmlConfig;
 	}
@@ -81,5 +88,9 @@ public class ServerProperties implements HazelcasterProperties {
 
 	public void setSyncReplicas(final int syncReplicas) {
 		this.syncReplicas = syncReplicas;
+	}
+
+	public void setCoordinator(final String coordinator) {
+		this.coordinator = coordinator;
 	}
 }

@@ -30,7 +30,6 @@ public class ServerConfiguration {
 		properties.setProperty("hazelcaster.cluster.name", hazelcasterProperties.getClusterName());
 		properties.setProperty("hazelcaster.cluster.key", hazelcasterProperties.getClusterKey());
 		properties.setProperty("hazelcaster.sync.replicas", Integer.toString(hazelcasterProperties.getSyncReplicas()));
-		System.out.println("REPLICAS: " + hazelcasterProperties.getSyncReplicas());
 		System.setProperty("hazelcast.logging.type", "slf4j");
 		return properties;
 	}
@@ -43,6 +42,10 @@ public class ServerConfiguration {
 		config.getNetworkConfig()
 			.getInterfaces()
 			.setInterfaces(hazelcasterProperties.getInterfaces());
+		config.getNetworkConfig()
+			.getJoin()
+			.getTcpIpConfig()
+			.addMember(hazelcasterProperties.getCoordinator());
 		return config;
 	}
 
