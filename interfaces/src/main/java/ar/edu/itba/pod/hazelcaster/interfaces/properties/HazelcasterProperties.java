@@ -10,4 +10,5 @@ public interface HazelcasterProperties {
 	public List<String> getInterfaces();
 	public List<String> getAddresses();
 	public int getSyncReplicas();
+	public String getCoordinator();
 }

@@ -131,6 +131,11 @@ public class ClientProperties
 		return -1;
 	}
 
+	@Override
+	public String getCoordinator() {
+		return "127.0.0.1";
+	}
+
 	public void setXmlConfig(final String xmlConfig) {
 		this.xmlConfig = xmlConfig;
 	}
