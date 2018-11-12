@@ -44,7 +44,6 @@ public class ClientProperties
 	@PositiveOrZero
 	protected int min;
 
-	@Pattern(regexp = "^$|[a-zA-Z0-9]{4}")
 	protected String oaci;
 
 	@NotBlank
