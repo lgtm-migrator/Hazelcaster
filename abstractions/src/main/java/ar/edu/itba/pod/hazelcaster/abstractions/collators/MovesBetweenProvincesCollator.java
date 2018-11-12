@@ -27,14 +27,25 @@ public class MovesBetweenProvincesCollator implements Collator<Map.Entry<String,
 		values.forEach(entry -> {	
 			if (entry.getValue() >= min) {
 				String[] provinces = StringPairKeyManager.getStringPair(entry.getKey());
+								
+//				provinces[0] = provinces[0].replace("\"", "");
+//				provinces[1] = provinces[1].replace("\"", "");
 				
-				result.add(new MovesBetweenProvincesOutput(
-						provinces[0],
-						provinces[1],
-						entry.getValue()));
+				if (provinces[0].compareTo(provinces[1]) < 0) {
+					result.add(new MovesBetweenProvincesOutput(
+							provinces[0],
+							provinces[1],
+							entry.getValue()));
+				}
+				else {
+					result.add(new MovesBetweenProvincesOutput(
+							provinces[1],
+							provinces[0],
+							entry.getValue()));
+				}
 			}	
 		});
-		
+				
 		return result.stream().collect(Collectors.toList());
 	}
 

@@ -17,7 +17,9 @@ public class MovesBetweenAirportsMapper implements Mapper<String, Movement, Stri
 	@Override
 	public void map(String key, Movement value, Context<String, LongPair> context) {
 		
-		if (value.getDestination().equals(value.getOrigin())) {
+		if (value.getDestination().equals(value.getOrigin()) 
+				|| value.getOrigin().equals("N/A") 
+				|| value.getDestination().equals("N/A")) {
 			return;
 		}
 		

@@ -21,7 +21,13 @@ public class SameMovesPairMapper implements Mapper<Long, List<String>, Long, Sam
 		if (size >= 2) {
 			for (int i = 0; i < size; i++) {
 				for (int j = i + 1; j < size; j++) {
-					context.emit(key, new SameMovesPairOutput(key, value.get(i), value.get(j)));
+					int cmp = value.get(i).compareTo(value.get(j));
+					if (cmp < 0) {
+						context.emit(key, new SameMovesPairOutput(key, value.get(i), value.get(j)));
+					}
+					else {
+						context.emit(key, new SameMovesPairOutput(key, value.get(j), value.get(i)));
+					}
 				}
 			}
 		}

@@ -27,12 +27,11 @@ public class MoveCountCollator implements Collator<Map.Entry<String,MoveCountOut
 			MoveCountOutput entryValue = entry.getValue();
 			String denomination = oaciDenominationMap.get(entry.getKey());
 			
-			if (denomination == null) {
-				denomination = "";
+			if (denomination != null && !denomination.equals("")) {
+				entryValue.setDenomination(denomination);
+				result.add(entryValue);
 			}
 			
-			entryValue.setDenomination(denomination);
-			result.add(entryValue);
 		});
 		
 		return result.parallelStream().collect(Collectors.toList());

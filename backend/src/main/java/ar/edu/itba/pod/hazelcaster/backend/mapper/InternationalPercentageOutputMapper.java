@@ -16,7 +16,7 @@ public class InternationalPercentageOutputMapper implements MapperService.Mapper
 	public String unmap(InternationalPercentageOutput object) {
 		return new StringBuilder(80)
 				.append(object.getIata()).append(CSVSerializer.SEPARATOR)
-				.append(object.getPercentage().toString()).append("\n")
+				.append(object.getPercentage().toString()).append("%\n")
 				.toString();
 	}
 

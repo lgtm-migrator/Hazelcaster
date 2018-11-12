@@ -22,10 +22,6 @@ public class LandingMoveCountMapper implements Mapper<String, Movement, String, 
 	@Override
 	public void map(String key, Movement value, Context<String, Long> context) {
 		
-		if (value.getDestination().equals(value.getOrigin())) {
-			return;
-		}
-		
 		if (value.getType().equals(MovementType.LANDING) 
 				&& value.getDestination().equals(oaci)) {
 			context.emit(value.getOrigin(), 1L);

@@ -16,10 +16,6 @@ public class MoveCountMapper implements Mapper<String, Movement, String, Long> {
 	@Override
 	public void map(String key, Movement value, Context<String, Long> context) {
 		
-		if (value.getDestination().equals(value.getOrigin())) {
-			return;
-		}
-		
 		if (value.getType().equals(MovementType.TAKE_OFF)) {
 			context.emit(value.getOrigin(), 1L);
 		}
