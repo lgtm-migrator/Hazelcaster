@@ -1,0 +1,77 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<hazelcast
+	xmlns = "http://www.hazelcast.com/schema/config"
+	xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation = "http://www.hazelcast.com/schema/config hazelcast-config-3.7.xsd">
+
+	<!-- Cluster Group -->
+	<group>
+		<name>${hazelcaster.cluster.name}</name>
+		<password>${hazelcaster.cluster.key}</password>
+	</group>
+
+	<!-- Network Configuration -->
+	<network>
+		<interfaces enabled = "true"/>
+		<join>
+			<!-- Only TCP instead of UDP. -->
+			<aws enabled = "false"/>
+			<multicast enabled = "false"/>
+			<tcp-ip enabled = "true"/>
+		</join>
+		<port auto-increment = "true" port-count = "64">5701</port>
+		<outbound-ports>
+			<!-- Only unprivileged ports. -->
+			<ports>1024-65535</ports>
+		</outbound-ports>
+		<reuse-address>true</reuse-address>
+	</network>
+
+	<!-- Job Tracker for Map-Reduce -->
+	<jobtracker name = "${hazelcaster.cluster.name}-jobtracker">
+		<max-thread-size>0</max-thread-size>
+		<queue-size>0</queue-size>
+		<chunk-size>1024</chunk-size>
+		<communicate-stats>false</communicate-stats>
+		<topology-changed-strategy>CANCEL_RUNNING_OPERATION</topology-changed-strategy>
+	</jobtracker>
+
+	<!-- Distributed Data Structures for Map-Reduce -->
+	<map name = "${hazelcaster.cluster.name}-map">
+		<in-memory-format>BINARY</in-memory-format>
+		<statistics-enabled>false</statistics-enabled>
+
+		<!-- Backup configuration. -->
+		<backup-count>${hazelcaster.sync.replicas}</backup-count>
+		<async-backup-count>0</async-backup-count>
+		<read-backup-data>true</read-backup-data>
+
+		<!-- Eviction disabled. -->
+		<time-to-live-seconds>0</time-to-live-seconds>
+		<max-idle-seconds>0</max-idle-seconds>
+		<eviction-policy>NONE</eviction-policy>
+		<max-size policy = "PER_NODE">0</max-size>
+
+		<!-- Split-brain policy. -->
+		<merge-policy>com.hazelcast.map.merge.PutIfAbsentMapMergePolicy</merge-policy>
+	</map>
+
+	<!-- Main Data Structures -->
+	<list name = "${hazelcaster.cluster.name}-airports">
+		<!-- Backup configuration. -->
+		<backup-count>${hazelcaster.sync.replicas}</backup-count>
+		<statistics-enabled>false</statistics-enabled>
+	</list>
+	<list name = "${hazelcaster.cluster.name}-movements">
+		<!-- Backup configuration. -->
+		<backup-count>${hazelcaster.sync.replicas}</backup-count>
+		<statistics-enabled>false</statistics-enabled>
+	</list>
+
+	<!-- Intermediate Data Structures -->
+	<list name = "${hazelcaster.cluster.name}-movecounts">
+		<!-- Backup configuration. -->
+		<backup-count>${hazelcaster.sync.replicas}</backup-count>
+		<statistics-enabled>false</statistics-enabled>
+	</list>
+</hazelcast>
