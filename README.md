@@ -1,6 +1,6 @@
 [![...](.resources/image/readme-header.png)](https://github.com/agustin-golmar/Hazelcaster/blob/master/.resources/doc/(2018)%20Map-Reduce%20On%20Hazelcast.pdf)
 [![...](https://img.shields.io/badge/hazelcast-v3.7.8-red.svg)](https://hazelcast.org/)
-[![...](https://img.shields.io/badge/release-v1.0-blue.svg)](https://github.com/agustin-golmar/Hazelcaster/releases)
+[![...](https://img.shields.io/badge/release-v1.0.1-blue.svg)](https://github.com/agustin-golmar/Hazelcaster/releases)
 [![...](https://www.travis-ci.com/agustin-golmar/Hazelcaster.svg?branch=master)](https://www.travis-ci.com/agustin-golmar/Hazelcaster)
 
 # Hazelcaster
