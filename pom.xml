@@ -37,7 +37,7 @@
 		<validation-api.version>2.0.1.Final</validation-api.version>
 
 		<!-- General Dependencies -->
-		<hibernate-validator.version>6.1.0.Final</hibernate-validator.version>
+		<hibernate-validator.version>6.1.5.Final</hibernate-validator.version>
 		<org.springframework.boot.version>2.0.6.RELEASE</org.springframework.boot.version>
 			<spring-boot.version>${org.springframework.boot.version}</spring-boot.version>
 			<spring-boot-autoconfigure.version>${org.springframework.boot.version}</spring-boot-autoconfigure.version>
